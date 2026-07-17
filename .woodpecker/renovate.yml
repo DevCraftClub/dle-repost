@@ -1,0 +1,22 @@
+# Обновление зависимостей (cron: понедельник 03:00 UTC)
+when:
+  - event: cron
+    cron: '0 3 * * 1'
+    branch: main
+  - event: manual
+
+labels:
+  homeserver: homeserver
+  debian-13: debian-13
+
+steps:
+  - name: renovate
+    image: renovate/renovate:43-full
+    environment:
+      RENOVATE_TOKEN:
+        from_secret: gitea_bot_tok
+      RENOVATE_PLATFORM: gitea
+      RENOVATE_ENDPOINT: https://git.hrdr.dev
+      LOG_LEVEL: info
+    commands:
+      - renovate Maxim/RepoName

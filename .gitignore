@@ -1,0 +1,531 @@
+# ==============================================================================
+# 1. Операционные системы (OS)
+# ==============================================================================
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Windows ###
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+### Linux ###
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==============================================================================
+# 2. ИИ-инструменты, ассистенты и остатки LLM
+# ==============================================================================
+### AI / Copilots / IDE-плагины ###
+.claude/
+.cursor/
+.cursor-server/
+.continue/
+.codeium/
+.tabnine/
+.cody/
+*.chatgpt
+chatgpt_history/
+.aix/
+.copilot/
+github-copilot-*
+
+# ==============================================================================
+# 3. IDE и редакторы
+# ==============================================================================
+### JetBrains (IntelliJ, PyCharm, WebStorm, Android Studio и др.) ###
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+cmake-build-*/
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### Visual Studio Code ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+*.code-workspace
+.history/
+*.vsix
+.vscode-test/
+
+### Eclipse ###
+.metadata
+.settings/
+.loadpath
+.recommenders/
+.externalToolBuilders/
+*.launch
+*.pydevproject
+.cproject
+.autotools
+.factorypath
+.buildpath
+.target
+.tern-project
+.texlipse
+.springBeans
+.apt_generated/
+.apt_generated_test/
+.cache-main
+.scala_dependencies
+.worksheet
+.sts4-cache/
+.project
+.classpath
+
+### Sublime Text ###
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+sftp-config.json
+sftp-config-alt*.json
+Package Control.*
+GitHub.sublime-settings
+*.sublime*
+
+### NetBeans ###
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# ==============================================================================
+# 4. Языки и фреймворки
+# ==============================================================================
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+*.mo
+*.pot
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+.scrapy
+docs/_build/
+.pybuilder/
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+.pdm.toml
+.pdm-python
+.pdm-build/
+__pypackages__/
+celerybeat-schedule
+celerybeat.pid
+*.sage.py
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env
+.spyderproject
+.spyproject
+.ropeproject
+/site
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+poetry.toml
+.ruff_cache/
+pyrightconfig.json
+
+### Node.js / React / Vue / JS-экосистема ###
+node_modules/
+jspm_packages/
+web_modules/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+pids/
+*.pid
+*.seed
+*.pid.lock
+lib-cov/
+coverage/
+*.lcov
+.nyc_output/
+.grunt/
+bower_components/
+.lock-wscript
+build/Release/
+typings/
+*.tsbuildinfo
+.npm/
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.node_repl_history
+*.tgz
+.yarn-integrity
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.cache/
+.parcel-cache/
+.next/
+out/
+.nuxt/
+.vuepress/dist/
+.temp/
+.docusaurus/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+psd/
+thumb/
+sketch/
+
+### Java / Android ###
+*.class
+*.apk
+*.aar
+*.ap_
+*.aab
+*.dex
+bin/
+gen/
+local.properties
+proguard/
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+freeline.py
+freeline/
+freeline_project_description.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+fastlane/readme.md
+vcs.xml
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+gen-external-apklibs/
+output.json
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.nar
+*.ear
+hs_err_pid*
+replay_pid*
+
+### PHP / Composer / Symfony / CakePHP ###
+composer.phar
+/vendor/
+/app/cache/*
+/app/logs/*
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+/app/spool/*
+/var/cache/*
+/var/logs/*
+/var/sessions/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
+!var/sessions/.gitkeep
+/var/log/*
+!var/log/.gitkeep
+/app/config/parameters.yml
+/app/config/parameters.ini
+/app/bootstrap.php.cache
+/var/bootstrap.php.cache
+/bin/*
+!bin/console
+!bin/symfony_requirements
+/web/bundles/
+/web/uploads/
+/app/phpunit.xml
+/phpunit.xml
+**/Entity/*~
+/.web-server-pid
+/config/app.php
+/tmp/cache/models/*
+!/tmp/cache/models/empty
+/tmp/cache/persistent/*
+!/tmp/cache/persistent/empty
+/tmp/cache/views/*
+!/tmp/cache/views/empty
+/tmp/sessions/*
+!/tmp/sessions/empty
+/tmp/tests/*
+!/tmp/tests/empty
+/logs/*
+!/logs/empty
+/app/tmp/*
+/app/Config/core.php
+/app/Config/database.php
+/vendors/*
+
+### C / C++ / CMake ###
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+CMakeUserPresets.json
+
+### NW.js ###
+credits.html
+locales/
+libEGL.dll
+libGLEv2.dll
+node.dll
+nw.dll
+nw.exe
+natives_blob.bin
+nw_100_percent.pak
+nw_200_percent.pak
+nw_elf.dll
+snapshot_blob.bin
+resources.pak
+d3dcompiler_47.dll
+ffmpeg.dll
+icudtl.dat
+pnacl/
+chromedriver.exe
+nacl_irt_x86_64.nexe
+nwjc.exe
+payload.exe
+
+### GitBook / CMS ###
+_book/
+*.epub
+*.mobi
+*.pdf
+
+# ==============================================================================
+# 5. Сборка и DevOps
+# ==============================================================================
+### Gradle ###
+.gradle/
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### JBoss ###
+jboss/server/all/deploy/project.ext
+jboss/server/default/deploy/project.ext
+jboss/server/minimal/deploy/project.ext
+jboss/server/all/log/*.log
+jboss/server/all/tmp/**/*
+jboss/server/all/data/**/*
+jboss/server/all/work/**/*
+jboss/server/default/log/*.log
+jboss/server/default/tmp/**/*
+jboss/server/default/data/**/*
+jboss/server/default/work/**/*
+jboss/server/minimal/log/*.log
+jboss/server/minimal/tmp/**/*
+jboss/server/minimal/data/**/*
+jboss/server/minimal/work/**/*
+*.DEPLOYED
+
+### Turbo ###
+.turbo/
+
+# ==============================================================================
+# 6. Разное (архивы, логи, резервные копии и т.д.)
+# ==============================================================================
+### Git: резервные копии и diff ###
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+*.patch
+*.diff
+*.gho
+*.ori
+*.bak
+*.swp
+*.tmp
+*~.nib
+
+### Безопасность / ключи ###
+*.ppk
+
+### Архивы ###
+*.7z
+*.rar
+*.zip
+*.gz
+*.gzip
+*.bzip
+*.bzip2
+*.bz2
+*.xz
+*.lzma
+*.xar
+*.zst
+*.tzst
+*.iso
+*.tar
+*.dmg
+*.xpi
+*.gem
+*.deb
+*.rpm
+*.txz
+
+### Office: временные файлы ###
+~$*.doc*
+Backup of *.doc*
+~$*.xls*
+*.xlk
+~$*.ppt*
+*.~vsd*
+
+# ==============================================================================
+# 7. DevCraft / DLE Plugin
+# ==============================================================================
+### DevCraft (локальная разработка) ###
+!devcraft/
+!devcraft/src/
+!devcraft/src/*
+devcraft/vendor/
+devcraft/composer.phar
+devcraft/logs/*
+devcraft/cache/*
+devcraft/.composer/*
+
+### DevCraft в upload/ (структура установки DLE) ###
+!upload/devcraft/
+!upload/devcraft/src/
+!upload/devcraft/src/*
+upload/devcraft/vendor/
+upload/devcraft/composer.phar
+upload/devcraft/logs/*
+upload/devcraft/cache/*
+upload/devcraft/.composer/*
+
+### Артефакты сборки (create_install_archive.sh) ###
+install_*.zip

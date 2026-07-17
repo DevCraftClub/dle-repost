@@ -1,0 +1,19 @@
+when:
+  - event: push
+    branch: main
+  - event: manual
+
+labels:
+  homeserver: homeserver
+  debian-13: debian-13
+
+steps:
+  build:
+    image: debian:13
+    commands:
+      - apt-get update && apt-get install -y --no-install-recommends bash rsync zip python3
+      - chmod +x create_install_archive.sh
+      - ./create_install_archive.sh
+      - test -n "$(ls install_*.zip 2>/dev/null)"
+    artifacts:
+      - install_*.zip
