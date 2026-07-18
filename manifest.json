@@ -1,6 +1,13 @@
 {
-	"version": "1.0.0",
-	"name": "devcraft",
-	"dle_version": "20.1",
-	"admin_version": "1.0.0"
+  "version": "200.1.0",
+  "status": "dev",
+  "dle": ["20.0"],
+  "php": ["8.3"],
+  "name": "RePost",
+  "description": "Публикация новостей в социальные сети (Telegram и провайдеры) для DLE 20 / DevCraft",
+  "devcraft_admin": "200.4.0",
+  "composer_require": [
+    "luzrain/telegram-bot-api",
+    "guzzlehttp/guzzle"
+  ]
 }

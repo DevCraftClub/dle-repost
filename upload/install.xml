@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dleplugin>
+	<name>RePost</name>
+	<description>Публикация новостей в социальные сети (Telegram и провайдеры) на базе DevCraft Admin</description>
+	<icon>engine/inc/repost.php</icon>
+	<version>200.1.0</version>
+	<dleversion>20.0</dleversion>
+	<versioncompare>greater</versioncompare>
+	<upgradeurl/>
+	<filedelete>1</filedelete>
+	<needplugin>DevCraft Admin</needplugin>
+	<mnotice>0</mnotice>
+	<mysqlinstall><![CDATA[]]></mysqlinstall>
+	<mysqlupgrade><![CDATA[
+INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups)
+VALUES ('repost', 'RePost v200.1.0', 'Публикация новостей в социальные сети', 'mif-telegram', '1')
+ON DUPLICATE KEY UPDATE title = 'RePost v200.1.0', descr = 'Публикация новостей в социальные сети', allow_groups = '1';
+]]></mysqlupgrade>
+	<mysqlenable><![CDATA[
+INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups)
+VALUES ('repost', 'RePost v200.1.0', 'Публикация новостей в социальные сети', 'mif-telegram', '1')
+ON DUPLICATE KEY UPDATE title = 'RePost v200.1.0', descr = 'Публикация новостей в социальные сети', allow_groups = '1';
+]]></mysqlenable>
+	<mysqldisable><![CDATA[
+DELETE FROM {prefix}_admin_sections WHERE name = 'repost';
+]]></mysqldisable>
+	<mysqldelete><![CDATA[
+DELETE FROM {prefix}_admin_sections WHERE name = 'repost';
+DROP TABLE IF EXISTS {prefix}_repost_cron;
+DROP TABLE IF EXISTS {prefix}_repost_templates;
+DROP TABLE IF EXISTS {prefix}_repost_proxies;
+DROP TABLE IF EXISTS {prefix}_repost_connections;
+]]></mysqldelete>
+	<phpinstall><![CDATA[]]></phpinstall>
+	<phpupgrade><![CDATA[]]></phpupgrade>
+	<phpenable><![CDATA[]]></phpenable>
+	<phpdisable><![CDATA[]]></phpdisable>
+	<phpdelete><![CDATA[]]></phpdelete>
+	<notice><![CDATA[
+Требуется DevCraft Admin >= 200.4.0.
+Таблицы Cycle ORM создаются по моделям при первом обращении к модулю в админке.
+После установки в каталоге devcraft/: composer require luzrain/telegram-bot-api guzzlehttp/guzzle && composer dump-autoload
+(если пакетов ещё нет в composer.json DevCraft). Vendor в архив плагина не входит.
+Cron: включите $allow_cron = 1 в cron.php и вызывайте cron.php?cronmode=repost или: php cron.php repost
+Ошибки отправки смотрите в Admin → Logs, модуль RePost. Debug — при включённом debug DevCraft.
+Документация: https://readme.devcraft.club/dev/repost/
+]]></notice>
+	<file name="engine/inc/addnews.php">
+		<operation action="before">
+			<searchcode><![CDATA[clear_cache( array('news_', 'tagscloud_', 'archives_', 'calendar_', 'topnews_', 'rss', 'stats') );]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (function_exists('sendRepost')) { sendRepost((int)$id, 'addnews'); }
+]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="engine/inc/editnews.php">
+		<operation action="before">
+			<searchcode><![CDATA[clear_cache( array('news_', $cprefix, 'comm_'.$item_db[0], 'tagscloud_', 'archives_', 'related_', 'calendar_', 'rss', 'stats') );]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (!empty($okchanges) && function_exists('sendRepost')) { sendRepost((int)$item_db[0], 'editnews'); }
+]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="engine/ajax/editnews.php">
+		<operation action="before">
+			<searchcode><![CDATA[clear_cache(array('news_', $cprefix, 'related_', 'rss', 'stats'));]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (function_exists('sendRepost')) { sendRepost((int)$id, 'editnews'); }
+]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="engine/modules/addnews.php">
+		<operation action="before">
+			<searchcode><![CDATA[clear_cache( array('news_', 'related_', 'tagscloud_', 'archives_', 'calendar_', 'topnews_', 'rss', 'stats') );]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (function_exists('sendRepost') && !empty($insert_id)) { sendRepost((int)$insert_id, 'addnews'); }
+]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="engine/inc/include/functions.inc.php">
+		<operation action="after">
+			<searchcode><![CDATA[$db->query( "DELETE FROM " . PREFIX . "_subscribe WHERE news_id='{$id}'");]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (function_exists('repostDeleteCronForNews')) { repostDeleteCronForNews((int)$id); }
+]]></replacecode>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="engine/modules/functions.php">
+		<operation action="after">
+			<searchcode><![CDATA[$db->query( "DELETE FROM " . PREFIX . "_subscribe WHERE news_id='{$id}'");]]></searchcode>
+			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+if (function_exists('repostDeleteCronForNews')) { repostDeleteCronForNews((int)$id); }
+]]></replacecode>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+	<file name="cron.php">
+		<operation action="before">
+			<searchcode><![CDATA[case 'antivirus':]]></searchcode>
+			<replacecode><![CDATA[case 'repost':
+        include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+        if (function_exists('repostRunCron')) { repostRunCron(); }
+        die('done');
+
+    case 'antivirus':]]></replacecode>
+			<enabled>1</enabled>
+		</operation>
+		<operation action="after">
+			<searchcode><![CDATA[$allowedMode = array('sitemap', 'optimize', 'antivirus', 'backup');]]></searchcode>
+			<replacecode><![CDATA[$allowedMode = array('sitemap', 'optimize', 'antivirus', 'backup', 'repost');]]></replacecode>
+			<enabled>1</enabled>
+		</operation>
+	</file>
+</dleplugin>

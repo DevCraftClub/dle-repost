@@ -1,0 +1,32 @@
+<div class="container-fluid">
+	<h4>{{ page_title }}</h4>
+	<table class="table striped table-border row-hover mt-4">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>{{ 'Новость'|trans }}</th>
+			<th>{{ 'Шаблон'|trans }}</th>
+			<th>{{ 'Тип'|trans }}</th>
+			<th>{{ 'План'|trans }}</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for item in items %}
+			<tr>
+				<td>{{ item.id }}</td>
+				<td>{{ item.news_id }}</td>
+				<td>{{ item.template }}</td>
+				<td>{{ item.event_type }}</td>
+				<td>{{ item.planned }}</td>
+				<td class="text-right">
+					<button type="button" class="button small primary" data-repost-cron="send" data-id="{{ item.id }}">{{ 'Отправить'|trans }}</button>
+					<button type="button" class="button small alert" data-repost-cron="delete" data-id="{{ item.id }}">{{ 'Удалить'|trans }}</button>
+				</td>
+			</tr>
+		{% else %}
+			<tr><td colspan="6">{{ 'Очередь пуста'|trans }}</td></tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,134 @@
+<h2>{{ page_title }}</h2>
+<form id="repost-template-form" class="mt-4">
+	<input type="hidden" name="id" value="{{ item.id }}">
+	<div class="grid">
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Название'|trans }}</label>
+				<input type="text" name="name" data-role="input" value="{{ item.name }}" required>
+			</div>
+			<div class="cell-md-6">
+				<label>{{ 'Подключение'|trans }}</label>
+				<select name="connection_id" data-role="select" required>
+					<option value="">{{ '— выберите —'|trans }}</option>
+					{% for id, label in connections %}
+						<option value="{{ id }}" {% if id == item.connection_id %}selected{% endif %}>{{ label }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Тип события'|trans }}</label>
+				<select name="template_type[]" multiple data-role="select">
+					<option value="addnews" {% if 'addnews' in item.type_list %}selected{% endif %}>{{ 'При добавлении'|trans }}</option>
+					<option value="editnews" {% if 'editnews' in item.type_list %}selected{% endif %}>{{ 'При редактировании'|trans }}</option>
+				</select>
+			</div>
+			<div class="cell-md-6">
+				<label>{{ 'Связь условий'|trans }}</label>
+				<select name="condition_relation" data-role="select">
+					<option value="and" {% if item.condition_relation == 'and' %}selected{% endif %}>{{ 'И'|trans }}</option>
+					<option value="or" {% if item.condition_relation == 'or' %}selected{% endif %}>{{ 'ИЛИ'|trans }}</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-12">
+				<label>{{ 'Текст шаблона'|trans }}</label>
+				{% if pm_wysiwyg %}
+					<textarea name="template" class="ajaxwysiwygeditor dc-repost-editor" rows="12">{{ item.template }}</textarea>
+				{% else %}
+					<textarea name="template" data-role="textarea" rows="12">{{ item.template }}</textarea>
+				{% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-12">
+				<label>{{ 'Условия'|trans }}</label>
+				<p class="text-muted text-small mb-2">{{ 'Правила отбора новости перед публикацией. Пустой список — все новости выбранного типа. Для категории укажите id (значение обычно 1).'|trans }}</p>
+				<div id="repost-conditions"
+					 data-conditions="{{ item.condition|e('html_attr') }}"
+					 data-fields="{{ condition_fields|json_encode|e('html_attr') }}">
+					<div id="repost-cond-rows" class="mb-2"></div>
+					<button type="button" class="button secondary" id="repost-cond-add">{{ 'Добавить условие'|trans }}</button>
+				</div>
+				<input type="hidden" name="condition" id="repost-condition-json" value="{{ item.condition }}">
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-4">
+				<input type="checkbox" data-role="checkbox" data-style="2" name="active" value="1" {% if item.active %}checked{% endif %} data-caption="{{ 'Активно'|trans }}">
+			</div>
+			<div class="cell-md-4">
+				<input type="checkbox" data-role="checkbox" data-style="2" name="cron" value="1" {% if item.cron %}checked{% endif %} data-caption="{{ 'В очередь cron'|trans }}">
+				<small class="text-muted d-block mt-1">{{ 'Имеет смысл только если в настройках модуля включена очередь. Иначе отправка сразу в провайдер.'|trans }}</small>
+			</div>
+			<div class="cell-md-4">
+				<input type="checkbox" data-role="checkbox" data-style="2" name="use_proxy" value="1" {% if item.use_proxy %}checked{% endif %} data-caption="{{ 'Использовать прокси'|trans }}">
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Прокси'|trans }}</label>
+				<select name="proxy_id" data-role="select">
+					{% for id, label in proxies %}
+						<option value="{{ id }}" {% if id == item.proxy_id %}selected{% endif %}>{{ label }}</option>
+					{% endfor %}
+				</select>
+				<small class="text-muted d-block mt-1">{{ '0 / «случайный» = любой активный из пула при включённом «Использовать прокси».'|trans }}</small>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="cell-12">
+				<div class="d-flex flex-wrap flex-align-center gap-2">
+					<button type="submit" class="button primary">{{ 'Сохранить'|trans }}</button>
+					<a href="{{ list_url }}" class="button">{{ 'Назад'|trans }}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% if pm_wysiwyg and pm_editor_script %}
+<script src="{{ dle_home }}public/js/jquery3.js"></script>
+<script src="{{ dle_home }}public/editor/tiny_mce/tinymce.min.js"></script>
+<script>
+	var dle_root = '{{ dle_home|e('js') }}';
+	var dle_login_hash = '{{ dle_login_hash|e('js') }}';
+	var dle_skin = '{{ dle_skin|e('js') }}';
+	window.DLEPasteSafeText = window.DLEPasteSafeText || function (args) { return args; };
+</script>
+<script>
+(function () {
+	var inited = false;
+	var editorScript = function () {
+		{{ pm_editor_script|raw }}
+	};
+
+	function initPmEditors() {
+		if (inited || typeof tinymce === 'undefined') {
+			return;
+		}
+		var nodes = document.querySelectorAll('textarea.ajaxwysiwygeditor.dc-repost-editor');
+		if (!nodes.length) {
+			return;
+		}
+		inited = true;
+		if (window.jQuery) {
+			jQuery(function () { editorScript(); });
+		} else {
+			editorScript();
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function () {
+			setTimeout(initPmEditors, 200);
+		});
+	} else {
+		setTimeout(initPmEditors, 200);
+	}
+})();
+</script>
+{% endif %}

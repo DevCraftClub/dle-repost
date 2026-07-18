@@ -1,0 +1,49 @@
+<div class="container-fluid">
+	<div class="d-flex flex-justify-between flex-align-center mb-4">
+		<h4 class="m-0">{{ page_title }}</h4>
+		<a href="{{ new_url }}" class="button primary"><span class="mif-plus"></span> {{ 'Создать'|trans }}</a>
+	</div>
+	<div class="remark info mb-4">
+		<p class="m-0">{{ 'Именованные API-учётные записи провайдера (бот + канал Telegram и т.п.). Несколько подключений — разные каналы или боты.'|trans }}</p>
+		<p class="m-0 mt-2 text-small">{{ 'Нужно активное подключение с валидным token/chat и хотя бы один активный шаблон, привязанный к нему. Chat id можно получить кнопкой в форме редактирования.'|trans }}</p>
+	</div>
+	<table class="table striped table-border row-hover">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>{{ 'Название'|trans }}</th>
+			<th>{{ 'Провайдер'|trans }}</th>
+			<th>{{ 'Активно'|trans }}</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for item in items %}
+			<tr>
+				<td>{{ item.id }}</td>
+				<td><a href="{{ item.edit_url }}">{{ item.name }}</a></td>
+				<td>{{ item.provider }}</td>
+				<td>{{ item.active ? 'Да'|trans : 'Нет'|trans }}</td>
+				<td class="text-right">
+					<div class="dropdown-button place-right">
+						<button type="button" class="button small dropdown-toggle">{{ 'Действия'|trans }}</button>
+						<ul class="d-menu drop-down-right" data-role="dropdown">
+							<li><a href="{{ item.edit_url }}">{{ 'Редактировать'|trans }}</a></li>
+							<li><a href="#" data-repost-copy="connection" data-id="{{ item.id }}">{{ 'Копировать'|trans }}</a></li>
+							<li>
+								<a href="#" data-repost-toggle="connection" data-id="{{ item.id }}" data-active="{{ item.active ? '1' : '0' }}">
+									{{ item.active ? 'Отключить'|trans : 'Включить'|trans }}
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li><a href="#" class="fg-red" data-repost-delete="connection" data-id="{{ item.id }}">{{ 'Удалить'|trans }}</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		{% else %}
+			<tr><td colspan="5">{{ 'Нет подключений'|trans }}</td></tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
