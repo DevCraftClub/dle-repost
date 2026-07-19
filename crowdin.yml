@@ -1,0 +1,3 @@
+files:
+  - source: /upload/engine/inc/maharder/_locales/ru_RU/mhadmin.xliff
+    translation: /upload/engine/inc/maharder/_locales/%locale_with_underscore%/%file_name%.%file_extension%
