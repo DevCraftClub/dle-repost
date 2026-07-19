@@ -1,0 +1,55 @@
+<div class="container-fluid">
+	<div class="d-flex flex-justify-between flex-align-center mb-4">
+		<h4 class="m-0">{{ page_title }}</h4>
+		<a href="{{ new_url }}" class="button primary"><span class="mif-plus"></span> {{ 'Создать'|trans }}</a>
+	</div>
+	<div class="remark info mb-4">
+		<p class="m-0">{{ 'Текст публикации, тип события (добавление/редактирование), условия отбора новости, флаги cron/proxy. Каждый шаблон обязан ссылаться на подключение.'|trans }}</p>
+		<p class="m-0 mt-2 text-small">{{ 'Нужны активный шаблон и активное подключение; пустые условия = все новости выбранного типа. Для очереди — cron.php?cronmode=repost.'|trans }}</p>
+	</div>
+	<table class="table striped table-border row-hover">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>{{ 'Название'|trans }}</th>
+			<th>{{ 'Подключение'|trans }}</th>
+			<th>{{ 'Тип'|trans }}</th>
+			<th>{{ 'Cron'|trans }}</th>
+			<th>{{ 'Прокси'|trans }}</th>
+			<th>{{ 'Активно'|trans }}</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for item in items %}
+			<tr>
+				<td>{{ item.id }}</td>
+				<td><a href="{{ item.edit_url }}">{{ item.name }}</a></td>
+				<td>{{ item.connection }}</td>
+				<td>{{ item.type }}</td>
+				<td>{{ item.cron ? 'Да'|trans : 'Нет'|trans }}</td>
+				<td>{{ item.proxy_label }}</td>
+				<td>{{ item.active ? 'Да'|trans : 'Нет'|trans }}</td>
+				<td class="text-right">
+					<div class="dropdown-button place-right">
+						<button type="button" class="button small dropdown-toggle">{{ 'Действия'|trans }}</button>
+						<ul class="d-menu drop-down-right" data-role="dropdown">
+							<li><a href="{{ item.edit_url }}">{{ 'Редактировать'|trans }}</a></li>
+							<li><a href="#" data-repost-copy="template" data-id="{{ item.id }}">{{ 'Копировать'|trans }}</a></li>
+							<li>
+								<a href="#" data-repost-toggle="template" data-id="{{ item.id }}" data-active="{{ item.active ? '1' : '0' }}">
+									{{ item.active ? 'Отключить'|trans : 'Включить'|trans }}
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li><a href="#" class="fg-red" data-repost-delete="template" data-id="{{ item.id }}">{{ 'Удалить'|trans }}</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		{% else %}
+			<tr><td colspan="8">{{ 'Нет шаблонов'|trans }}</td></tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,53 @@
+<h2>{{ page_title }}</h2>
+<form id="repost-proxy-form" class="mt-4">
+	<input type="hidden" name="id" value="{{ item.id }}">
+	<div class="grid">
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'IP / хост'|trans }}</label>
+				<input type="text" name="ip" data-role="input" value="{{ item.ip }}" required>
+			</div>
+			<div class="cell-md-6">
+				<label>{{ 'Порт'|trans }}</label>
+				<input type="number" name="port" data-role="input" value="{{ item.port }}" required>
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Тип'|trans }}</label>
+				<select name="type" data-role="select">
+					{% for t in ['http', 'https', 'socks4', 'socks5'] %}
+						<option value="{{ t }}" {% if t == item.type %}selected{% endif %}>{{ t }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="cell-md-6">
+				<label class="d-block mb-2">&nbsp;</label>
+				<input type="checkbox" data-role="checkbox" data-style="2" name="auth" value="1" {% if item.auth %}checked{% endif %} data-caption="{{ 'Авторизация'|trans }}">
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Логин'|trans }}</label>
+				<input type="text" name="user" data-role="input" value="{{ item.user }}">
+			</div>
+			<div class="cell-md-6">
+				<label>{{ 'Пароль'|trans }}</label>
+				<input type="password" name="pass" data-role="input" value="{{ item.pass }}">
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<input type="checkbox" data-role="checkbox" data-style="2" name="active" value="1" {% if item.active %}checked{% endif %} data-caption="{{ 'Активно'|trans }}">
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="cell-12">
+				<div class="d-flex flex-wrap flex-align-center gap-2">
+					<button type="submit" class="button primary">{{ 'Сохранить'|trans }}</button>
+					<a href="{{ list_url }}" class="button">{{ 'Назад'|trans }}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

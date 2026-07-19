@@ -1,0 +1,128 @@
+<div class="container-fluid">
+	<h4 class="mb-2">{{ page_title }}</h4>
+	<div class="remark info mb-4">
+		<p class="m-0">{{ 'Справочник плейсхолдеров шаблона: базовые теги RePost/DLE, полный набор по каждому каналу, HTML-allowlist и допустимые расширения медиа. Клик по коду тега копирует его в буфер.'|trans }}</p>
+		<p class="m-0 mt-2 text-small">
+			<a href="{{ docs_tags }}" target="_blank" rel="noopener">{{ 'Документация по тегам'|trans }}</a>
+			·
+			<a href="{{ docs_link }}" target="_blank" rel="noopener">{{ 'Документация модуля'|trans }}</a>
+		</p>
+	</div>
+
+	<h5 class="mt-4">{{ 'Базовые'|trans }}</h5>
+	{% for group, hints in base_groups %}
+		<p class="text-muted text-small mb-1"><code>{{ group }}</code></p>
+		<table class="table striped table-border row-hover mb-3">
+			<thead>
+			<tr>
+				<th>{{ 'Тег'|trans }}</th>
+				<th>{{ 'Описание'|trans }}</th>
+				<th>{{ 'Группа'|trans }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for hint in hints %}
+				<tr>
+					<td>
+						<code class="dc-repost-copy-tag" role="button" tabindex="0"
+							  data-repost-copy-tag="{{ hint.code|e('html_attr') }}"
+							  title="{{ 'Скопировать'|trans }}">{{ hint.code }}</code>
+					</td>
+					<td>{{ hint.descr }}</td>
+					<td>{{ hint.group }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	{% endfor %}
+
+	{% for provider in providers %}
+		<h5 class="mt-4">{{ provider.title }} <span class="text-muted text-small">({{ provider.code }}{% if provider.version %} · {{ provider.version }}{% endif %})</span></h5>
+
+		{% for group, hints in provider.hint_groups %}
+			<p class="text-muted text-small mb-1"><code>{{ group }}</code></p>
+			<table class="table striped table-border row-hover mb-3">
+				<thead>
+				<tr>
+					<th>{{ 'Тег'|trans }}</th>
+					<th>{{ 'Описание'|trans }}</th>
+					<th>{{ 'Группа'|trans }}</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for hint in hints %}
+					<tr>
+						<td>
+							<code class="dc-repost-copy-tag" role="button" tabindex="0"
+								  data-repost-copy-tag="{{ hint.code|e('html_attr') }}"
+								  title="{{ 'Скопировать'|trans }}">{{ hint.code }}</code>
+						</td>
+						<td>{{ hint.descr }}</td>
+						<td>{{ hint.group }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		{% endfor %}
+
+		{% if provider.html_tags|length > 0 %}
+			<p class="mb-1"><strong>{{ 'HTML канала'|trans }}</strong></p>
+			<div class="d-flex flex-wrap gap-1 mb-3">
+				{% for tag in provider.html_tags %}
+					<span class="chip"><span class="label">&lt;{{ tag }}&gt;</span></span>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if provider.media_extensions is iterable %}
+			<p class="mb-1"><strong>{{ 'Расширения медиа'|trans }}</strong></p>
+			<table class="table striped table-border mb-3">
+				<thead>
+				<tr>
+					<th>{{ 'Тип'|trans }}</th>
+					<th>{{ 'Расширения'|trans }}</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for kind, exts in provider.media_extensions %}
+					<tr>
+						<td><code>{{ kind }}</code></td>
+						<td>
+							{% if exts is iterable and exts|length > 0 %}
+								{{ exts|join(', ') }}
+							{% else %}
+								<span class="text-muted">{{ '—'|trans }}</span>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		{% endif %}
+	{% endfor %}
+
+	{% if xfield_hints|length > 0 %}
+		<h5 class="mt-4">{{ 'Доп. поля сайта'|trans }}</h5>
+		<p class="text-muted text-small mb-2">{{ 'Как чипы в редакторе шаблона: значение поля, текст без ссылок, хештеги.'|trans }}</p>
+		<table class="table striped table-border row-hover mb-3">
+			<thead>
+			<tr>
+				<th>{{ 'Тег'|trans }}</th>
+				<th>{{ 'Описание'|trans }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for hint in xfield_hints %}
+				<tr>
+					<td>
+						<code class="dc-repost-copy-tag" role="button" tabindex="0"
+							  data-repost-copy-tag="{{ hint.code|e('html_attr') }}"
+							  title="{{ 'Скопировать'|trans }}">{{ hint.code }}</code>
+					</td>
+					<td>{{ hint.descr }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+</div>

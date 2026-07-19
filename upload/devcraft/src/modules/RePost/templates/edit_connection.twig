@@ -1,0 +1,70 @@
+<h2>{{ page_title }}</h2>
+<form id="repost-connection-form" class="mt-4">
+	<input type="hidden" name="id" value="{{ item.id }}">
+	<div class="grid">
+		<div class="row">
+			<div class="cell-md-6">
+				<label>{{ 'Название'|trans }}</label>
+				<input type="text" name="name" data-role="input" value="{{ item.name }}" required>
+			</div>
+			<div class="cell-md-6">
+				<label>{{ 'Провайдер'|trans }}</label>
+				<select name="provider" data-role="select">
+					{% for code, title in providers %}
+						<option value="{{ code }}" {% if code == item.provider %}selected{% endif %}>{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="cell-md-6">
+				<input type="checkbox" data-role="checkbox" data-style="2" name="active" value="1" {% if item.active %}checked{% endif %} data-caption="{{ 'Активно'|trans }}">
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			{% for field in fields %}
+				<div class="cell-md-6 mb-3">
+					{% if field.type == 'checkbox' %}
+						<input type="hidden" name="config[{{ field.name }}]" value="0">
+						<input type="checkbox" data-role="checkbox" data-style="2"
+							name="config[{{ field.name }}]" value="1"
+							{% if field.value is same as(true) or field.value == '1' or field.value == 1 or field.value is same as('true') %}checked{% endif %}
+							data-caption="{{ field.label }}">
+					{% else %}
+						<label>{{ field.label }}</label>
+						{% if field.type == 'select' %}
+							<select name="config[{{ field.name }}]" data-role="select">
+								{% for opt, label in field.options %}
+									<option value="{{ opt }}" {% if opt == field.value %}selected{% endif %}>{{ label }}</option>
+								{% endfor %}
+							</select>
+						{% else %}
+							<input type="text" name="config[{{ field.name }}]" data-role="input" value="{{ field.value }}">
+						{% endif %}
+					{% endif %}
+					{% if field.help %}<small class="text-muted d-block mt-1">{{ field.help|raw }}</small>{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+		{% if item.provider == 'telegram' %}
+			<div class="row">
+				<div class="cell-12">
+					<div class="d-flex flex-wrap flex-align-center gap-2 mb-2">
+						<button type="button" class="button secondary" id="repost-tg-chat">{{ 'Получить chat id'|trans }}</button>
+						<button type="button" class="button secondary" id="repost-tg-test">{{ 'Тест'|trans }}</button>
+					</div>
+					<pre id="repost-tg-result" class="remark mb-0 p-2" style="min-height:2rem"></pre>
+				</div>
+			</div>
+		{% endif %}
+		<div class="row mt-4">
+			<div class="cell-12">
+				<div class="d-flex flex-wrap flex-align-center gap-2">
+					<button type="submit" class="button primary">{{ 'Сохранить'|trans }}</button>
+					<a href="{{ list_url }}" class="button">{{ 'Назад'|trans }}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
