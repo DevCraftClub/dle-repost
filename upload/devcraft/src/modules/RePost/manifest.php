@@ -48,13 +48,6 @@ return [
 		'docsLink'    => 'https://readme.devcraft.club/dev/repost/',
 		'siteLink'    => 'https://devcraft.club/downloads/repost.30/',
 		'siteId'      => 30,
-		'author'      => [
-			'name'     => 'Maxim Harder',
-			'contacts' => [
-				['name' => __('E-Mail'), 'link' => 'mailto:dev@devcraft.club'],
-				['name' => __('Telegram'), 'link' => 'https://t.me/MaHarder'],
-			],
-		],
 	],
 	'menu'              => [
 		AdminLink::page(__('Главная'), 'dashboard', DashboardPage::class, 'mif-home', 'repost'),
