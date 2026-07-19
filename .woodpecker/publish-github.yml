@@ -5,6 +5,14 @@ labels:
   homeserver: homeserver
   debian-13: debian-13
 
+# partial/shallow clone ломает push на GitHub (missing objects).
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      partial: false
+      depth: 0
+
 steps:
   publish-github:
     image: debian:13
@@ -16,6 +24,5 @@ steps:
       DEBIAN_FRONTEND: noninteractive
     commands:
       - apt-get update && apt-get install -y --no-install-recommends git curl jq ca-certificates
-      - git fetch --unshallow || true
       - chmod +x .woodpecker/publish-github.sh
       - .woodpecker/publish-github.sh
