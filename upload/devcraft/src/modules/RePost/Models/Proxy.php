@@ -27,10 +27,10 @@ class Proxy extends AbstractEntity {
 	public string $type = 'http';
 
 	#[Column(type: 'string(255)', nullable: true)]
-	public ?string $user = null;
+	public ?string $user = NULL;
 
 	#[Column(type: 'string(255)', nullable: true)]
-	public ?string $pass = null;
+	public ?string $pass = NULL;
 
 	#[Column(type: 'boolean', default: false)]
 	public bool $auth = false;
@@ -52,7 +52,7 @@ class Proxy extends AbstractEntity {
 			'pass'   => $this->pass,
 			'auth'   => $this->auth,
 			'active' => $this->active,
-			default  => null,
+			default  => NULL,
 		};
 	}
 

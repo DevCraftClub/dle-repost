@@ -6,9 +6,9 @@ namespace DevCraft\Modules\RePost\Pages;
 
 use DevCraft\Core\Application;
 use DevCraft\Core\Abstracts\AbstractPage;
-use DevCraft\Modules\RePost\Models\Connection;
 use DevCraft\Modules\RePost\Models\Proxy;
 use DevCraft\Modules\RePost\Models\Template;
+use DevCraft\Modules\RePost\Models\Connection;
 
 /**
  * Список шаблонов.
@@ -24,8 +24,8 @@ final class TemplatesPage extends AbstractPage {
 		/** @var list<Connection> $conns */
 		$conns = $db->repository(Connection::class)->select()->fetchAll();
 		/** @var list<Proxy> $proxies */
-		$proxies = $db->repository(Proxy::class)->select()->fetchAll();
-		$map     = [];
+		$proxies  = $db->repository(Proxy::class)->select()->fetchAll();
+		$map      = [];
 		$proxyMap = [];
 
 		foreach($conns as $c) {

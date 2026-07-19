@@ -23,7 +23,7 @@ final class SettingsHandler implements AjaxHandlerInterface {
 		$plugin = Application::instance()->registry()->forMod($request->mod);
 		$schema = $plugin?->settingsSchema();
 
-		if($schema === null) {
+		if($schema === NULL) {
 			return JsonResponse::fail(__('Ошибка'), __('Схема настроек недоступна'), 'validation');
 		}
 
@@ -47,7 +47,7 @@ final class SettingsHandler implements AjaxHandlerInterface {
 
 		if($result['valid'] !== []) {
 			$existing = DataManager::getConfig($schema->codename);
-			$merged   = array_merge(is_array($existing) ? $existing : [], $result['valid']);
+			$merged   = array_merge(is_array($existing)? $existing : [], $result['valid']);
 			DataManager::saveConfig($schema->codename, $merged);
 			DevCraftConfig::resetCache();
 		}
@@ -69,7 +69,7 @@ final class SettingsHandler implements AjaxHandlerInterface {
 					'message' => __('Частичное сохранение завершено с ошибками в полях'),
 					'title'   => __('Внимание'),
 					'fields'  => $result['errors'],
-				]
+				],
 			);
 		}
 

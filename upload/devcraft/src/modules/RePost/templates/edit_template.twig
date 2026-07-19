@@ -39,8 +39,14 @@
 				{% if pm_wysiwyg %}
 					<textarea name="template" class="ajaxwysiwygeditor dc-repost-editor" rows="12">{{ item.template }}</textarea>
 				{% else %}
-					<textarea name="template" data-role="textarea" rows="12">{{ item.template }}</textarea>
+					<textarea name="template" data-role="textarea" class="dc-repost-editor" rows="12">{{ item.template }}</textarea>
 				{% endif %}
+				<div id="repost-tag-chips"
+					 class="mt-2 d-flex flex-wrap gap-1"
+					 data-hints="{{ template_tag_hints|json_encode|e('html_attr') }}"
+					 data-allowed-html="{{ allowed_html_tags|json_encode|e('html_attr') }}">
+				</div>
+				<small class="text-muted d-block mt-1">{{ 'Нажмите тег — он вставится в шаблон. Кнопки форматирования редактора соответствуют HTML, который принимает канал (для Telegram — жирный, курсив, ссылка и т.п.).'|trans }}</small>
 			</div>
 		</div>
 		<div class="row">
@@ -120,6 +126,11 @@
 		} else {
 			editorScript();
 		}
+		setTimeout(function () {
+			if (window.DevCraftRepost && DevCraftRepost.constrainTinyMce) {
+				DevCraftRepost.constrainTinyMce();
+			}
+		}, 600);
 	}
 
 	if (document.readyState === 'loading') {

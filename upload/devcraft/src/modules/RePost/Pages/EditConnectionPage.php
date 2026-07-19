@@ -19,18 +19,21 @@ final class EditConnectionPage extends AbstractPage {
 		$id = (int) ($_GET['id'] ?? 0);
 		/** @var ConnectionRepository $repo */
 		$repo = Application::instance()->database()->repository(Connection::class);
-		$item = $id > 0 ? $repo->findOneById($id) : null;
+		$item = $id > 0? $repo->findOneById($id) : NULL;
 
 		$this->addBreadcrumb(__('Подключения'), '?mod=repost&action=connections');
-		$this->addBreadcrumb($item ? __('Редактирование') : __('Новое подключение'));
+		$this->addBreadcrumb($item? __('Редактирование') : __('Новое подключение'));
 
-		$provider = $item?->provider ?? (string) ($_GET['provider'] ?? 'telegram');
-		$prov     = ProviderRegistry::get($provider);
-		$cfg      = $item?->getConfigArray() ?? [];
+		$provider = (string) ($_GET['provider'] ?? $item?->provider ?? 'telegram');
+		if($provider === '') {
+			$provider = 'telegram';
+		}
+		$prov = ProviderRegistry::get($provider);
+		$cfg  = $item?->getConfigArray() ?? [];
 
 		$fields = [];
 
-		if($prov !== null) {
+		if($prov !== NULL) {
 			$schema = $prov->settingsSchema();
 
 			foreach($schema->sections as $section) {
@@ -50,7 +53,7 @@ final class EditConnectionPage extends AbstractPage {
 		return [
 			'view' => 'repost/edit_connection.twig',
 			'data' => [
-				'page_title' => $item ? __('Редактирование подключения') : __('Новое подключение'),
+				'page_title' => $item? __('Редактирование подключения') : __('Новое подключение'),
 				'item'       => [
 					'id'       => $item?->id() ?? 0,
 					'name'     => $item?->name ?? '',

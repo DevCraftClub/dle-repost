@@ -12,13 +12,13 @@ use DLEPlugins;
 final class ProviderRegistry {
 
 	/** @var array<string, array{name: string, title: string, version: string, class: class-string<ProviderInterface>}>|null */
-	private static ?array $cache = null;
+	private static ?array $cache = NULL;
 
 	/**
 	 * @return array<string, array{name: string, title: string, version: string, class: class-string<ProviderInterface>}>
 	 */
 	public static function all(): array {
-		if(self::$cache !== null) {
+		if(self::$cache !== NULL) {
 			return self::$cache;
 		}
 
@@ -29,7 +29,7 @@ final class ProviderRegistry {
 			return self::$cache = $out;
 		}
 
-		foreach(scandir($base) ?: [] as $entry) {
+		foreach(scandir($base)? : [] as $entry) {
 			if($entry === '.' || $entry === '..' || $entry === 'ProviderInterface.php' || $entry === 'ProviderRegistry.php') {
 				continue;
 			}
@@ -72,13 +72,13 @@ final class ProviderRegistry {
 		$all = self::all();
 
 		if(!isset($all[$code])) {
-			return null;
+			return NULL;
 		}
 
 		$class = $all[$code]['class'];
 
 		if(!is_a($class, ProviderInterface::class, true)) {
-			return null;
+			return NULL;
 		}
 
 		return new $class();

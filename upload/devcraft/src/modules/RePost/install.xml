@@ -41,7 +41,9 @@ DROP TABLE IF EXISTS {prefix}_repost_connections;
 Таблицы Cycle ORM создаются по моделям при первом обращении к модулю в админке.
 После установки в каталоге devcraft/: composer require luzrain/telegram-bot-api guzzlehttp/guzzle && composer dump-autoload
 (если пакетов ещё нет в composer.json DevCraft). Vendor в архив плагина не входит.
-Cron: включите $allow_cron = 1 в cron.php и вызывайте cron.php?cronmode=repost или: php cron.php repost
+Очередь RePost обрабатывается через авто-cron DLE ($config['cron']) → engine/modules/cron.php → repostRunCron().
+Патч в engine/modules/cron.php добавляет только вызов repostRunCron() перед штатной логикой авто-cron.
+На форме новости: отложенная отправка, время, выбор шаблонов.
 Ошибки отправки смотрите в Admin → Logs, модуль RePost. Debug — при включённом debug DevCraft.
 Документация: https://readme.devcraft.club/dev/repost/
 ]]></notice>
@@ -49,8 +51,29 @@ Cron: включите $allow_cron = 1 в cron.php и вызывайте cron.ph
 		<operation action="before">
 			<searchcode><![CDATA[clear_cache( array('news_', 'tagscloud_', 'archives_', 'calendar_', 'topnews_', 'rss', 'stats') );]]></searchcode>
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
-if (function_exists('sendRepost')) { sendRepost((int)$id, 'addnews'); }
+if (function_exists('sendRepost')) { sendRepost((int)$id, 'addnews', function_exists('repostOptionsFromRequest') ? repostOptionsFromRequest() : []); }
 ]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+		<operation action="replace">
+			<searchcode><![CDATA[								{$rss_option}
+							  </div>
+							 </div>
+
+					</div>
+					{$xf_tabs_body}]]></searchcode>
+			<replacecode><![CDATA[								{$rss_option}
+							  </div>
+							 </div>
+HTML;
+include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost_news_form.php'));
+if (function_exists('repostNewsFormHtml')) { echo repostNewsFormHtml(); }
+echo <<<HTML
+
+					</div>
+					{$xf_tabs_body}]]></replacecode>
 			<searchcount>1</searchcount>
 			<replacecount>1</replacecount>
 			<enabled>1</enabled>
@@ -60,8 +83,29 @@ if (function_exists('sendRepost')) { sendRepost((int)$id, 'addnews'); }
 		<operation action="before">
 			<searchcode><![CDATA[clear_cache( array('news_', $cprefix, 'comm_'.$item_db[0], 'tagscloud_', 'archives_', 'related_', 'calendar_', 'rss', 'stats') );]]></searchcode>
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
-if (!empty($okchanges) && function_exists('sendRepost')) { sendRepost((int)$item_db[0], 'editnews'); }
+if (!empty($okchanges) && function_exists('sendRepost')) { sendRepost((int)$item_db[0], 'editnews', function_exists('repostOptionsFromRequest') ? repostOptionsFromRequest() : []); }
 ]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+		<operation action="replace">
+			<searchcode><![CDATA[								{$rss_option}
+							  </div>
+							 </div>
+
+					</div>
+					{$xf_tabs_body}]]></searchcode>
+			<replacecode><![CDATA[								{$rss_option}
+							  </div>
+							 </div>
+HTML;
+include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost_news_form.php'));
+if (function_exists('repostNewsFormHtml')) { echo repostNewsFormHtml(); }
+echo <<<HTML
+
+					</div>
+					{$xf_tabs_body}]]></replacecode>
 			<searchcount>1</searchcount>
 			<replacecount>1</replacecount>
 			<enabled>1</enabled>
@@ -71,7 +115,7 @@ if (!empty($okchanges) && function_exists('sendRepost')) { sendRepost((int)$item
 		<operation action="before">
 			<searchcode><![CDATA[clear_cache(array('news_', $cprefix, 'related_', 'rss', 'stats'));]]></searchcode>
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
-if (function_exists('sendRepost')) { sendRepost((int)$id, 'editnews'); }
+if (function_exists('sendRepost')) { sendRepost((int)$id, 'editnews', function_exists('repostOptionsFromRequest') ? repostOptionsFromRequest() : []); }
 ]]></replacecode>
 			<searchcount>1</searchcount>
 			<replacecount>1</replacecount>
@@ -82,8 +126,33 @@ if (function_exists('sendRepost')) { sendRepost((int)$id, 'editnews'); }
 		<operation action="before">
 			<searchcode><![CDATA[clear_cache( array('news_', 'related_', 'tagscloud_', 'archives_', 'calendar_', 'topnews_', 'rss', 'stats') );]]></searchcode>
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
-if (function_exists('sendRepost') && !empty($insert_id)) { sendRepost((int)$insert_id, 'addnews'); }
+if (function_exists('sendRepost') && !empty($insert_id)) { sendRepost((int)$insert_id, 'addnews', function_exists('repostOptionsFromRequest') ? repostOptionsFromRequest() : []); }
 ]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
+			<enabled>1</enabled>
+		</operation>
+		<operation action="after">
+			<searchcode><![CDATA[		} else $tpl->set( '{admintag}', '' );
+		
+		if( $is_logged and $member_id['user_group'] < 3 ) {]]></searchcode>
+			<replacecode><![CDATA[		} else $tpl->set( '{admintag}', '' );
+
+		include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost_news_form.php'));
+		if (function_exists('repostNewsFormHtml')) {
+			$repost_form = repostNewsFormHtml('frontend');
+			if ($repost_form !== '') {
+				$repost_li = '<li class="form-group" id="repost-news-form-wrap">' . $repost_form . '</li>';
+				$tpl->copy_template = preg_replace(
+					'#(<input[^>]*\b(?:id|name)=([\'"])tags\2[^>]*>.*?</li>)#is',
+					'$1' . "\n\t\t\t\t" . $repost_li,
+					$tpl->copy_template,
+					1
+				);
+			}
+		}
+		
+		if( $is_logged and $member_id['user_group'] < 3 ) {]]></replacecode>
 			<searchcount>1</searchcount>
 			<replacecount>1</replacecount>
 			<enabled>1</enabled>
@@ -95,6 +164,8 @@ if (function_exists('sendRepost') && !empty($insert_id)) { sendRepost((int)$inse
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
 if (function_exists('repostDeleteCronForNews')) { repostDeleteCronForNews((int)$id); }
 ]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
 			<enabled>1</enabled>
 		</operation>
 	</file>
@@ -104,23 +175,22 @@ if (function_exists('repostDeleteCronForNews')) { repostDeleteCronForNews((int)$
 			<replacecode><![CDATA[include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
 if (function_exists('repostDeleteCronForNews')) { repostDeleteCronForNews((int)$id); }
 ]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
 			<enabled>1</enabled>
 		</operation>
 	</file>
-	<file name="cron.php">
+	<file name="engine/modules/cron.php">
 		<operation action="before">
-			<searchcode><![CDATA[case 'antivirus':]]></searchcode>
-			<replacecode><![CDATA[case 'repost':
-        include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
-        if (function_exists('repostRunCron')) { repostRunCron(); }
-        die('done');
-
-    case 'antivirus':]]></replacecode>
-			<enabled>1</enabled>
-		</operation>
-		<operation action="after">
-			<searchcode><![CDATA[$allowedMode = array('sitemap', 'optimize', 'antivirus', 'backup');]]></searchcode>
-			<replacecode><![CDATA[$allowedMode = array('sitemap', 'optimize', 'antivirus', 'backup', 'repost');]]></replacecode>
+			<searchcode><![CDATA[	unset($cron_data['locked']);
+	unset($cron_data['successtime']);
+	
+	set_vars( "cron", $cron_data );]]></searchcode>
+			<replacecode><![CDATA[	include_once (DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php'));
+	if (function_exists('repostRunCron')) { repostRunCron(); }
+]]></replacecode>
+			<searchcount>1</searchcount>
+			<replacecount>1</replacecount>
 			<enabled>1</enabled>
 		</operation>
 	</file>

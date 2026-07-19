@@ -6,8 +6,8 @@ namespace DevCraft\Modules\RePost\Ajax;
 
 use DevCraft\Core\Http\AjaxRequest;
 use DevCraft\Core\Http\JsonResponse;
-use DevCraft\Core\Interfaces\AjaxHandlerInterface;
 use DevCraft\Core\Interfaces\ResponseInterface;
+use DevCraft\Core\Interfaces\AjaxHandlerInterface;
 use DevCraft\Modules\RePost\Provider\Telegram\TelegramProvider;
 
 /**
@@ -26,7 +26,7 @@ final class TelegramTestHandler implements AjaxHandlerInterface {
 
 		if($request->method === 'telegram_chat_id') {
 			try {
-				$updates = $provider->getUpdates($token, null, 10);
+				$updates = $provider->getUpdates($token, NULL, 10);
 			} catch(\Throwable $e) {
 				return JsonResponse::fail(__('Ошибка'), $e->getMessage(), 'api', 500);
 			}
@@ -36,11 +36,11 @@ final class TelegramTestHandler implements AjaxHandlerInterface {
 			foreach($updates as $update) {
 				$msg = $update->message ?? $update->channelPost;
 
-				if($msg === null) {
+				if($msg === NULL) {
 					continue;
 				}
 
-				$chat = $msg->chat;
+				$chat                      = $msg->chat;
 				$chats[(string) $chat->id] = [
 					'id'    => $chat->id,
 					'title' => $chat->title ?? $chat->username ?? $chat->id,
@@ -57,12 +57,16 @@ final class TelegramTestHandler implements AjaxHandlerInterface {
 			return JsonResponse::fail(__('Ошибка'), __('Укажите chat id'), 'validation', 422);
 		}
 
-		$text   = trim((string) ($request->data['text'] ?? '')) ?: __('Тестовое сообщение RePost');
+		$text   = trim((string) ($request->data['text'] ?? ''))? : __('Тестовое сообщение RePost');
 		$result = $provider->sendTestMessage($token, $chat, $text);
 
 		return $result->ok
 			? JsonResponse::toast(__('Тест отправлен'), ['raw' => $result->raw])
-			: JsonResponse::fail(__('Ошибка'), $result->message !== '' ? $result->message : __('sendMessage не удался'), 'api', 500, ['raw' => $result->raw]);
+			: JsonResponse::fail(__('Ошибка'),
+				$result->message !== ''? $result->message : __('sendMessage не удался'),
+				'api',
+				500,
+				['raw' => $result->raw]);
 	}
 
 }

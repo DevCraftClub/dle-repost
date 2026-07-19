@@ -6,10 +6,12 @@ namespace DevCraft\Modules\RePost\Services;
 
 use DevCraft\Core\Support\DataManager;
 use DevCraft\Core\Support\ParseTemplateTags;
+use DevCraft\Modules\RePost\Provider\DefaultTemplateTags;
 use DevCraft\Modules\RePost\Services\Dto\RenderedMessage;
+use DevCraft\Modules\RePost\Provider\TemplateTagsInterface;
 
 /**
- * Рендер шаблона: ParseTemplateTags + RePost-специфика.
+ * Рендер шаблона: ParseTemplateTags + теги канала.
  */
 final class ContentRenderer {
 
@@ -17,24 +19,32 @@ final class ContentRenderer {
 	 * @param   array<string, mixed>  $newsRow
 	 * @param   array<string, mixed>  $moduleConfig
 	 */
-	public function render(string $template, array $newsRow, array $moduleConfig = [], string $sendType = 'text'): RenderedMessage {
+	public function render(
+		string                 $template,
+		array                  $newsRow,
+		array                  $moduleConfig = [],
+		string                 $sendType = 'text',
+		?TemplateTagsInterface $tags = NULL,
+	): RenderedMessage {
 		if($moduleConfig === []) {
 			$moduleConfig = DataManager::getConfig('repost');
 		}
 
-		$extra = $this->buildExtra($newsRow, $moduleConfig);
+		$tags  ??= new DefaultTemplateTags();
+		$extra = $tags->extraPlaceholders($newsRow, $moduleConfig);
 		$html  = ParseTemplateTags::apply($template, $newsRow, $extra, ['mode' => 'full', 'globals' => true]);
-		$html  = $this->processIfBlocks($html, $newsRow);
+		$html  = $tags->applyAfterParse($html, $newsRow, $moduleConfig);
 		[$html, $buttons] = $this->extractButtons($html);
-		$media            = $this->extractMediaTags($html);
-		$html             = $media['text'];
-		$html             = $this->decodeForTelegram($html);
+		[$html, $thumb] = $this->extractThumb($html);
+		$media = $this->extractMediaTags($html, $newsRow, $moduleConfig);
+		$html  = $media['text'];
+		$html  = $tags->sanitizeHtml($html);
 
 		$images = $media['images'];
 		$videos = $media['videos'];
 		$audios = $media['audios'];
 
-		if($images === [] && $videos === [] && $audios === []) {
+		if(!$media['has_tags'] && $images === [] && $videos === [] && $audios === []) {
 			$collected = $this->collectFromNews($newsRow, $moduleConfig);
 			$images    = $collected['images'];
 			$videos    = $collected['videos'];
@@ -44,17 +54,18 @@ final class ContentRenderer {
 		[$images, $videos, $audios] = $this->filterBySendType($sendType, $images, $videos, $audios);
 
 		return new RenderedMessage(
-			text: trim($html),
-			images: $images,
-			videos: $videos,
-			audios: $audios,
-			buttons: $buttons,
+			text    : trim($html),
+			images  : $images,
+			videos  : $videos,
+			audios  : $audios,
+			buttons : $buttons,
 			sendType: $sendType,
+			thumb   : $thumb,
 		);
 	}
 
 	/**
-	 * Оставляет только медиа, уместные для tg_send_type.
+	 * Оставляет только медиа, уместные для send_type подключения.
 	 *
 	 * @param   list<string>  $images
 	 * @param   list<string>  $videos
@@ -63,85 +74,15 @@ final class ContentRenderer {
 	 * @return array{0: list<string>, 1: list<string>, 2: list<string>}
 	 */
 	private function filterBySendType(string $sendType, array $images, array $videos, array $audios): array {
-		return match($sendType) {
-			'audio'             => [[], [], $audios],
-			'video'             => [[], $videos, []],
-			'photo', 'document' => [$images, [], []],
-			'media'             => [$images, $videos, $audios],
-			'text'              => [[], [], []],
-			default             => [$images, $videos, $audios],
+		return match ($sendType) {
+			'audio', 'media_audio'    => [[], [], $audios],
+			'video', 'media_video'    => [[], $videos, []],
+			'photo'                   => [$images, [], []],
+			'document'                => [$images, $videos, []],
+			'media', 'media_document' => [$images, $videos, $audios],
+			'text'                    => [[], [], []],
+			default                   => [$images, $videos, $audios],
 		};
-	}
-
-	/**
-	 * @param   array<string, mixed>  $newsRow
-	 * @param   array<string, mixed>  $moduleConfig
-	 *
-	 * @return array<string, string>
-	 */
-	private function buildExtra(array $newsRow, array $moduleConfig): array {
-		$sepHash = (string) ($moduleConfig['hashtag_separator'] ?? ' ');
-		$sepTag  = (string) ($moduleConfig['tag_separator'] ?? ', ');
-		$sepCat  = (string) ($moduleConfig['category_separator'] ?? ', ');
-
-		$tags = array_filter(array_map('trim', explode(',', (string) ($newsRow['tags'] ?? ''))));
-		$hash = [];
-
-		foreach($tags as $tag) {
-			$urlTag = preg_replace('/\s+/u', '_', $tag) ?? $tag;
-			$hash[] = '#' . $urlTag;
-		}
-
-		$catHash = [];
-		$catIds  = array_filter(array_map('intval', explode(',', (string) ($newsRow['category'] ?? ''))));
-
-		global $cat_info;
-
-		if(is_array($cat_info ?? null)) {
-			foreach($catIds as $cid) {
-				$name = (string) ($cat_info[$cid]['name'] ?? '');
-
-				if($name !== '') {
-					$catHash[] = '#' . str_replace(' ', '_', $name);
-				}
-			}
-		}
-
-		return [
-			'{hashtags}'         => implode($sepHash, $hash),
-			'{category-hashtag}' => implode($sepTag, $catHash),
-			'{tags}'             => implode($sepTag, $tags),
-		];
-	}
-
-	/**
-	 * @param   array<string, mixed>  $newsRow
-	 */
-	private function processIfBlocks(string $html, array $newsRow): string {
-		return (string) preg_replace_callback(
-			'/\[if\s+([^\]]+)\](.*?)\[\/if\]/is',
-			static function (array $m) use ($newsRow): string {
-				$expr = trim($m[1]);
-				$body = $m[2];
-
-				if(preg_match('/^([a-z0-9_\-]+)\s*(=|!=)\s*[\'"]?(.*?)[\'"]?$/i', $expr, $parts)) {
-					$field = $parts[1];
-					$op    = $parts[2];
-					$want  = $parts[3];
-					$have  = (string) ($newsRow[$field] ?? '');
-
-					$ok = $op === '=' ? ($have === $want) : ($have !== $want);
-
-					return $ok ? $body : '';
-				}
-
-				$field = $expr;
-				$have  = trim((string) ($newsRow[$field] ?? ''));
-
-				return $have !== '' ? $body : '';
-			},
-			$html
-		);
 	}
 
 	/**
@@ -151,50 +92,252 @@ final class ContentRenderer {
 		$buttons = [];
 		$html    = (string) preg_replace_callback(
 			'/\[button=([^\]]+)\](.*?)\[\/button\]/is',
-			static function (array $m) use (&$buttons): string {
+			static function(array $m) use (&$buttons): string {
 				$buttons[] = ['url' => trim($m[1]), 'text' => trim(strip_tags($m[2]))];
 
 				return '';
 			},
-			$html
+			$html,
 		);
 
 		return [$html, $buttons];
 	}
 
 	/**
-	 * @return array{text: string, images: list<string>, videos: list<string>, audios: list<string>}
+	 * @return array{0: string, 1: ?string}
 	 */
-	private function extractMediaTags(string $html): array {
-		$images = [];
-		$videos = [];
-		$audios = [];
+	private function extractThumb(string $html): array {
+		$thumb = NULL;
+		$html  = (string) preg_replace_callback(
+			'/\[repost_thumb\](.*?)\[\/repost_thumb\]/is',
+			static function(array $m) use (&$thumb): string {
+				$candidate = trim(strip_tags($m[1]));
 
-		$html = (string) preg_replace_callback(
-			'/\[repost_media_(image|photo|video|audio)=([^\]]+)\]/i',
-			static function (array $m) use (&$images, &$videos, &$audios): string {
-				$type = strtolower($m[1]);
-				$url  = trim($m[2]);
-
-				if($type === 'video') {
-					$videos[] = $url;
-				} elseif($type === 'audio') {
-					$audios[] = $url;
-				} else {
-					$images[] = $url;
+				if($candidate !== '' && $thumb === NULL) {
+					$thumb = $candidate;
 				}
 
 				return '';
 			},
-			$html
+			$html,
+		);
+
+		return [$html, $thumb];
+	}
+
+	/**
+	 * @param   array<string, mixed>  $newsRow
+	 * @param   array<string, mixed>  $moduleConfig
+	 *
+	 * @return array{text: string, images: list<string>, videos: list<string>, audios: list<string>, has_tags: bool}
+	 */
+	private function extractMediaTags(string $html, array $newsRow, array $moduleConfig): array {
+		$images  = [];
+		$videos  = [];
+		$audios  = [];
+		$hasTags = false;
+		$maxAll  = 10;
+		$pool    = NULL;
+
+		$getPool = function() use (&$pool, $newsRow, $moduleConfig): array {
+			return $pool ??= $this->collectFromNews($newsRow, $moduleConfig);
+		};
+
+		$slice = static function(array $list, ?int $index, ?int $max) use ($maxAll): array {
+			if($index !== NULL) {
+				$item = $list[$index] ?? NULL;
+
+				return $item !== NULL? [$item] : [];
+			}
+
+			$limit = $max ?? $maxAll;
+
+			return array_slice($list, 0, max(0, $limit));
+		};
+
+		$parseAttrs = static function(string $raw): array {
+			$out = [];
+
+			if(preg_match_all('/(url|image|video|audio|file|max)=([^\s\]]+)/i', $raw, $m, PREG_SET_ORDER)) {
+				foreach($m as $row) {
+					$out[strtolower($row[1])] = trim($row[2], " \t\"'");
+				}
+			}
+
+			return $out;
+		};
+
+		$add = static function(string $kind, string $url) use (&$images, &$videos, &$audios): void {
+			$url = trim($url);
+
+			if($url === '') {
+				return;
+			}
+
+			if($kind === 'video') {
+				$videos[] = $url;
+			} elseif($kind === 'audio') {
+				$audios[] = $url;
+			} else {
+				$images[] = $url;
+			}
+		};
+
+		$html = (string) preg_replace_callback(
+			'/\[repost_media_(image|photo|video|audio|document|allimages|xfield_([a-z0-9_\-]+))(?:\s+([^\]]*))?\]/i',
+			function(array $m) use (
+				&$hasTags,
+				&$images,
+				&$videos,
+				&$audios,
+				$getPool,
+				$slice,
+				$parseAttrs,
+				$add,
+				$newsRow,
+				$moduleConfig,
+				$maxAll,
+			): string {
+				$hasTags = true;
+				$type    = strtolower($m[1]);
+				$xfName  = $m[2] !== ''? $m[2] : NULL;
+				$attrs   = $parseAttrs($m[3] ?? '');
+				$url     = $attrs['url'] ?? NULL;
+
+				if($url !== NULL) {
+					$kind = match ($type) {
+						'video' => 'video',
+						'audio' => 'audio',
+						default => 'image',
+					};
+					$add($kind, $url);
+
+					return '';
+				}
+
+				$indexKey = match ($type) {
+					'video' => 'video',
+					'audio' => 'audio',
+					default => 'image',
+				};
+				$index    = isset($attrs[$indexKey])? max(0, (int) $attrs[$indexKey] - 1)
+					: (isset($attrs['file'])? max(0, (int) $attrs['file'] - 1) : NULL);
+				$max      = isset($attrs['max'])? max(0, (int) $attrs['max']) : NULL;
+
+				if($xfName !== NULL) {
+					$files = $this->collectXfieldAny($newsRow, $xfName, $moduleConfig);
+					foreach($slice($files, $index, $max) as $file) {
+						$add('image', $file);
+					}
+
+					return '';
+				}
+
+				$pool = $getPool();
+
+				if($type === 'allimages' || $type === 'image' || $type === 'photo') {
+					foreach($slice($pool['images'], $index, $max) as $file) {
+						$add('image', $file);
+					}
+				} elseif($type === 'video') {
+					foreach($slice($pool['videos'], $index, $max) as $file) {
+						$add('video', $file);
+					}
+				} elseif($type === 'audio') {
+					foreach($slice($pool['audios'], $index, $max) as $file) {
+						$add('audio', $file);
+					}
+				} elseif($type === 'document') {
+					$docs = array_merge($pool['images'], $pool['videos'], $pool['audios']);
+					foreach($slice($docs, $index, $max ?? $maxAll) as $file) {
+						$add('image', $file);
+					}
+				}
+
+				return '';
+			},
+			$html,
 		);
 
 		return [
-			'text'   => $html,
-			'images' => $images,
-			'videos' => $videos,
-			'audios' => $audios,
+			'text'     => $html,
+			'images'   => array_values(array_unique($images)),
+			'videos'   => array_values(array_unique($videos)),
+			'audios'   => array_values(array_unique($audios)),
+			'has_tags' => $hasTags,
 		];
+	}
+
+	/**
+	 * Файлы одного xfield (image/gallery/audio/video).
+	 *
+	 * @param   array<string, mixed>  $newsRow
+	 * @param   array<string, mixed>  $moduleConfig
+	 *
+	 * @return list<string>
+	 */
+	private function collectXfieldAny(array $newsRow, string $name, array $moduleConfig): array {
+		$raw   = (string) ($newsRow['xfields'] ?? '');
+		$types = $this->xfieldTypes();
+		$type  = $types[$name] ?? '';
+
+		if(in_array($type, ['image', 'imagegalery', 'gallery'], true)) {
+			$out = [];
+
+			foreach(explode('||', $raw) as $chunk) {
+				$chunk = trim($chunk);
+				$sep   = strpos($chunk, '|');
+
+				if($sep === false || substr($chunk, 0, $sep) !== $name) {
+					continue;
+				}
+
+				$value = substr($chunk, $sep + 1);
+
+				if($type === 'image') {
+					$path = $this->normalizeXfImagePath($value);
+
+					if($path !== '') {
+						$out[] = preg_match('#^(https?:)?//#i', $path) === 1
+							? $path
+							: 'uploads/posts/' . ltrim(str_replace('\\', '/', $path), '/');
+					}
+				} else {
+					foreach(explode(',', $value) as $p) {
+						$path = $this->normalizeXfImagePath($p);
+
+						if($path === '') {
+							continue;
+						}
+
+						$out[] = preg_match('#^(https?:)?//#i', $path) === 1
+							? $path
+							: 'uploads/posts/' . ltrim(str_replace('\\', '/', $path), '/');
+					}
+				}
+			}
+
+			return $out;
+		}
+
+		if($type === 'video' || $type === 'audio') {
+			return $this->collectXfieldFileList($raw, $type);
+		}
+
+		foreach(explode('||', $raw) as $chunk) {
+			$chunk = trim($chunk);
+			$sep   = strpos($chunk, '|');
+
+			if($sep === false || substr($chunk, 0, $sep) !== $name) {
+				continue;
+			}
+
+			$value = trim(substr($chunk, $sep + 1));
+
+			return $value !== ''? [$value] : [];
+		}
+
+		return [];
 	}
 
 	/**
@@ -204,15 +347,15 @@ final class ContentRenderer {
 	 * @return array{images: list<string>, videos: list<string>, audios: list<string>}
 	 */
 	private function collectFromNews(array $newsRow, array $moduleConfig): array {
-		$blob     = (string) ($newsRow['full_story'] ?? '') . (string) ($newsRow['short_story'] ?? '') . (string) ($newsRow['xfields'] ?? '');
-		$allowed  = array_map('trim', explode(',', (string) ($moduleConfig['img_types'] ?? 'jpg,jpeg,png,gif,webp')));
-		$images   = [];
-		$videos   = [];
-		$audios   = [];
+		$blob    = (string) ($newsRow['full_story'] ?? '') . (string) ($newsRow['short_story'] ?? '') . (string) ($newsRow['xfields'] ?? '');
+		$allowed = array_map('trim', explode(',', (string) ($moduleConfig['img_types'] ?? 'jpg,jpeg,png,gif,webp')));
+		$images  = [];
+		$videos  = [];
+		$audios  = [];
 
 		if(preg_match_all('/<img[^>]+src=["\']([^"\']+)["\']/i', $blob, $m)) {
 			foreach($m[1] as $url) {
-				$ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?: $url, PATHINFO_EXTENSION));
+				$ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH)? : $url, PATHINFO_EXTENSION));
 
 				if(in_array($ext, $allowed, true)) {
 					$images[] = $url;
@@ -235,16 +378,16 @@ final class ContentRenderer {
 		}
 
 		if(preg_match('#<!--dle_video_begin:(.+?)-->#is', $blob, $vm)) {
-			$part = str_replace('&#124;', '|', $vm[1]);
-			$part = explode(',', trim($part));
-			$part = explode('|', $part[0]);
+			$part     = str_replace('&#124;', '|', $vm[1]);
+			$part     = explode(',', trim($part));
+			$part     = explode('|', $part[0]);
 			$videos[] = trim($part[0]);
 		}
 
 		if(preg_match('#<!--dle_audio_begin:(.+?)-->#is', $blob, $am)) {
-			$part = str_replace('&#124;', '|', $am[1]);
-			$part = explode(',', trim($part));
-			$part = explode('|', $part[0]);
+			$part     = str_replace('&#124;', '|', $am[1]);
+			$part     = explode(',', trim($part));
+			$part     = explode('|', $part[0]);
 			$audios[] = trim($part[0]);
 		}
 
@@ -349,7 +492,7 @@ final class ContentRenderer {
 				? [$this->normalizeXfImagePath($value)]
 				: array_map(
 					fn(string $p): string => $this->normalizeXfImagePath($p),
-					explode(',', $value)
+					explode(',', $value),
 				);
 
 			foreach($paths as $path) {
@@ -379,7 +522,7 @@ final class ContentRenderer {
 	 * @return array<string, string> name => type
 	 */
 	private function xfieldTypes(): array {
-		static $cache = null;
+		static $cache = NULL;
 
 		if(is_array($cache)) {
 			return $cache;
@@ -398,14 +541,14 @@ final class ContentRenderer {
 		}
 
 		$decoded = json_decode((string) file_get_contents($path), true);
-		$fields  = is_array($decoded) ? ($decoded['fields'] ?? []) : [];
+		$fields  = is_array($decoded)? ($decoded['fields'] ?? []) : [];
 
 		if(!is_array($fields)) {
 			return $cache;
 		}
 
 		foreach($fields as $name => $meta) {
-			$key = is_string($name) ? $name : (string) (is_array($meta) ? ($meta['name'] ?? '') : '');
+			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
 
 			if($key === '' || !is_array($meta)) {
 				continue;
@@ -429,53 +572,10 @@ final class ContentRenderer {
 		if(count($parts) > 1) {
 			$candidate = trim($parts[1]);
 
-			return $candidate !== '' ? $candidate : trim($parts[0]);
+			return $candidate !== ''? $candidate : trim($parts[0]);
 		}
 
 		return trim($parts[0]);
-	}
-
-	private function decodeForTelegram(string $text): string {
-		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-
-		$map = [
-			'[b]'  => '<b>', '[/b]' => '</b>',
-			'[u]'  => '<u>', '[/u]' => '</u>',
-			'[i]'  => '<i>', '[/i]' => '</i>',
-			'[s]'  => '<s>', '[/s]' => '</s>',
-			'[code]' => '<code>', '[/code]' => '</code>',
-			'{comments}' => '', '{addcomments}' => '', '{navigation}' => '',
-			'{pages}' => '', '{PAGEBREAK}' => '', '{favorites}' => '', '{poll}' => '',
-		];
-
-		$text = (string) preg_replace_callback(
-			'/\[url=(.*?)\](.*?)\[\/url\]/is',
-			static fn(array $m): string => '<a href="' . htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8') . '">'
-				. htmlspecialchars($m[2], ENT_QUOTES, 'UTF-8') . '</a>',
-			$text
-		);
-
-		$text = (string) preg_replace(
-			'/\[(edit|add-favorites|del-favorites|complaint|comments-subscribe|comments-unsubscribe|day-news|allow-comments-subscribe)\].*?\[\/\1\]/is',
-			'',
-			$text
-		);
-
-		$text = str_replace(array_keys($map), array_values($map), $text);
-
-		// Telegram HTML не поддерживает <br>/<p>/<div> — только перевод строки
-		$text = (string) preg_replace('/<\s*br\s*\/?\s*>/i', "\n", $text);
-		$text = (string) preg_replace('/<\/\s*p\s*>/i', "\n", $text);
-		$text = (string) preg_replace('/<\s*p[^>]*>/i', "\n", $text);
-		$text = (string) preg_replace('/<\/\s*div\s*>/i', "\n", $text);
-		$text = (string) preg_replace('/<\s*div[^>]*>/i', "\n", $text);
-		$text = (string) preg_replace('/<\s*hr\s*\/?\s*>/i', "\n", $text);
-
-		// Только теги, которые принимает parse_mode=HTML
-		$text = strip_tags($text, '<b><strong><i><em><u><ins><s><strike><del><a><code><pre><tg-spoiler><blockquote>');
-		$text = (string) preg_replace("/\n{3,}/", "\n\n", $text);
-
-		return trim($text);
 	}
 
 }

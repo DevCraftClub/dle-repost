@@ -7,9 +7,9 @@ namespace DevCraft\Modules\RePost\Ajax;
 use DevCraft\Core\Application;
 use DevCraft\Core\Http\AjaxRequest;
 use DevCraft\Core\Http\JsonResponse;
-use DevCraft\Core\Interfaces\AjaxHandlerInterface;
-use DevCraft\Core\Interfaces\ResponseInterface;
 use DevCraft\Modules\RePost\Models\Proxy;
+use DevCraft\Core\Interfaces\ResponseInterface;
+use DevCraft\Core\Interfaces\AjaxHandlerInterface;
 use DevCraft\Modules\RePost\Repositories\ProxyRepository;
 
 /**
@@ -25,18 +25,19 @@ final class ProxyHandler implements AjaxHandlerInterface {
 			$id  = (int) ($request->data['id'] ?? 0);
 			$src = $repo->findOneById($id);
 
-			if($src === null) {
+			if($src === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Прокси не найден'), 'not_found', 404);
 			}
 
 			$port = $src->port;
 
 			while(
-				$repo->select()
+				$repo
+					->select()
 					->where('ip', $src->ip)
 					->where('port', $port)
 					->where('type', $src->type)
-					->fetchOne() !== null
+					->fetchOne() !== NULL
 			) {
 				$port++;
 
@@ -45,7 +46,7 @@ final class ProxyHandler implements AjaxHandlerInterface {
 						__('Ошибка'),
 						__('Не удалось подобрать свободный порт для копии'),
 						'conflict',
-						409
+						409,
 					);
 				}
 			}
@@ -67,7 +68,7 @@ final class ProxyHandler implements AjaxHandlerInterface {
 			$id   = (int) ($request->data['id'] ?? 0);
 			$item = $repo->findOneById($id);
 
-			if($item === null) {
+			if($item === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Прокси не найден'), 'not_found', 404);
 			}
 
@@ -80,7 +81,7 @@ final class ProxyHandler implements AjaxHandlerInterface {
 			$id   = (int) ($request->data['id'] ?? 0);
 			$item = $repo->findOneById($id);
 
-			if($item === null) {
+			if($item === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Прокси не найден'), 'not_found', 404);
 			}
 
@@ -88,8 +89,8 @@ final class ProxyHandler implements AjaxHandlerInterface {
 			$repo->saveEntity($item);
 
 			return JsonResponse::toast(
-				$item->active ? __('Включено') : __('Отключено'),
-				['active' => $item->active]
+				$item->active? __('Включено') : __('Отключено'),
+				['active' => $item->active],
 			);
 		}
 
@@ -101,17 +102,17 @@ final class ProxyHandler implements AjaxHandlerInterface {
 			return JsonResponse::fail(__('Ошибка'), __('Укажите IP и порт'), 'validation', 422);
 		}
 
-		$item = $id > 0 ? $repo->findOneById($id) : new Proxy();
+		$item = $id > 0? $repo->findOneById($id) : new Proxy();
 
-		if($id > 0 && $item === null) {
+		if($id > 0 && $item === NULL) {
 			return JsonResponse::fail(__('Ошибка'), __('Прокси не найден'), 'not_found', 404);
 		}
 
 		$item->ip     = $ip;
 		$item->port   = $port;
 		$item->type   = (string) ($request->data['type'] ?? 'http');
-		$item->user   = trim((string) ($request->data['user'] ?? '')) ?: null;
-		$item->pass   = (string) ($request->data['pass'] ?? '') ?: null;
+		$item->user   = trim((string) ($request->data['user'] ?? ''))? : NULL;
+		$item->pass   = (string) ($request->data['pass'] ?? '')? : NULL;
 		$item->auth   = !empty($request->data['auth']);
 		$item->active = !empty($request->data['active']);
 		$repo->saveEntity($item);

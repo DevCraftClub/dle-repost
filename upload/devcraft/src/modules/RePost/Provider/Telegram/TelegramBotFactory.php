@@ -16,15 +16,15 @@ final class TelegramBotFactory {
 	/**
 	 * @param   array<string, mixed>|null  $proxy  ip, port, type, auth, user, pass
 	 */
-	public static function create(string $token, ?array $proxy = null): BotApi {
+	public static function create(string $token, ?array $proxy = NULL): BotApi {
 		$httpFactory = new HttpFactory();
 		$client      = new Client(self::guzzleOptions($proxy));
 
 		return new BotApi(
 			requestFactory: $httpFactory,
-			streamFactory: $httpFactory,
-			client: $client,
-			token: $token,
+			streamFactory : $httpFactory,
+			client        : $client,
+			token         : $token,
 		);
 	}
 
@@ -42,7 +42,7 @@ final class TelegramBotFactory {
 
 		$proxyUri = self::proxyUri($proxy);
 
-		if($proxyUri !== null) {
+		if($proxyUri !== NULL) {
 			$options['proxy'] = $proxyUri;
 		}
 
@@ -53,8 +53,8 @@ final class TelegramBotFactory {
 	 * @param   array<string, mixed>|null  $proxy
 	 */
 	private static function proxyUri(?array $proxy): ?string {
-		if($proxy === null || empty($proxy['ip'])) {
-			return null;
+		if($proxy === NULL || empty($proxy['ip'])) {
+			return NULL;
 		}
 
 		$host = (string) $proxy['ip'];
@@ -63,11 +63,11 @@ final class TelegramBotFactory {
 		$auth = !empty($proxy['auth']) && !empty($proxy['user']);
 		$user = rawurlencode((string) ($proxy['user'] ?? ''));
 		$pass = rawurlencode((string) ($proxy['pass'] ?? ''));
-		$cred = $auth ? $user . ':' . $pass . '@' : '';
+		$cred = $auth? $user . ':' . $pass . '@' : '';
 
-		$scheme = str_contains($type, 'socks') ? 'socks5' : 'http';
+		$scheme = str_contains($type, 'socks')? 'socks5' : 'http';
 
-		return $scheme . '://' . $cred . $host . ($port > 0 ? ':' . $port : '');
+		return $scheme . '://' . $cred . $host . ($port > 0? ':' . $port : '');
 	}
 
 }

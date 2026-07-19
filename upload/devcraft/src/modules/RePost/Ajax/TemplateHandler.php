@@ -7,11 +7,11 @@ namespace DevCraft\Modules\RePost\Ajax;
 use DevCraft\Core\Application;
 use DevCraft\Core\Http\AjaxRequest;
 use DevCraft\Core\Http\JsonResponse;
-use DevCraft\Core\Interfaces\AjaxHandlerInterface;
-use DevCraft\Core\Interfaces\ResponseInterface;
 use DevCraft\Modules\RePost\Models\Template;
-use DevCraft\Modules\RePost\Repositories\TemplateRepository;
+use DevCraft\Core\Interfaces\ResponseInterface;
 use DevCraft\Modules\RePost\Services\CopyHelper;
+use DevCraft\Core\Interfaces\AjaxHandlerInterface;
+use DevCraft\Modules\RePost\Repositories\TemplateRepository;
 
 /**
  * CRUD шаблонов.
@@ -26,14 +26,14 @@ final class TemplateHandler implements AjaxHandlerInterface {
 			$id  = (int) ($request->data['id'] ?? 0);
 			$src = $repo->findOneById($id);
 
-			if($src === null) {
+			if($src === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Шаблон не найден'), 'not_found', 404);
 			}
 
 			$clone                     = new Template();
 			$clone->name               = CopyHelper::uniqueName(
 				$src->name,
-				static fn(string $n): bool => $repo->select()->where('name', $n)->fetchOne() !== null
+				static fn(string $n): bool => $repo->select()->where('name', $n)->fetchOne() !== NULL,
 			);
 			$clone->connection_id      = $src->connection_id;
 			$clone->condition          = $src->condition;
@@ -53,7 +53,7 @@ final class TemplateHandler implements AjaxHandlerInterface {
 			$id   = (int) ($request->data['id'] ?? 0);
 			$item = $repo->findOneById($id);
 
-			if($item === null) {
+			if($item === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Шаблон не найден'), 'not_found', 404);
 			}
 
@@ -66,7 +66,7 @@ final class TemplateHandler implements AjaxHandlerInterface {
 			$id   = (int) ($request->data['id'] ?? 0);
 			$item = $repo->findOneById($id);
 
-			if($item === null) {
+			if($item === NULL) {
 				return JsonResponse::fail(__('Ошибка'), __('Шаблон не найден'), 'not_found', 404);
 			}
 
@@ -74,8 +74,8 @@ final class TemplateHandler implements AjaxHandlerInterface {
 			$repo->saveEntity($item);
 
 			return JsonResponse::toast(
-				$item->active ? __('Включено') : __('Отключено'),
-				['active' => $item->active]
+				$item->active? __('Включено') : __('Отключено'),
+				['active' => $item->active],
 			);
 		}
 
@@ -87,20 +87,21 @@ final class TemplateHandler implements AjaxHandlerInterface {
 			return JsonResponse::fail(__('Ошибка'), __('Укажите название и подключение'), 'validation', 422);
 		}
 
-		$item = $id > 0 ? $repo->findOneById($id) : new Template();
+		$item = $id > 0? $repo->findOneById($id) : new Template();
 
-		if($id > 0 && $item === null) {
+		if($id > 0 && $item === NULL) {
 			return JsonResponse::fail(__('Ошибка'), __('Шаблон не найден'), 'not_found', 404);
 		}
 
 		$templateType = $request->data['template_type'] ?? 'addnews,editnews';
 
 		if(is_array($templateType)) {
-			$parts = array_values(array_filter(array_map(
+			$parts        = array_values(array_filter(array_map(
 				static fn(mixed $v): string => trim((string) $v),
-				$templateType
-			), static fn(string $v): bool => $v !== ''));
-			$templateType = $parts !== [] ? implode(',', $parts) : 'addnews,editnews';
+				$templateType,
+			),
+				static fn(string $v): bool => $v !== ''));
+			$templateType = $parts !== []? implode(',', $parts) : 'addnews,editnews';
 		} else {
 			$templateType = trim((string) $templateType);
 			if($templateType === '') {
@@ -118,7 +119,7 @@ final class TemplateHandler implements AjaxHandlerInterface {
 		$item->cron               = !empty($request->data['cron']);
 		$item->use_proxy          = !empty($request->data['use_proxy']);
 		$proxyId                  = (int) ($request->data['proxy_id'] ?? 0);
-		$item->proxy_id           = $proxyId > 0 ? $proxyId : null;
+		$item->proxy_id           = $proxyId > 0? $proxyId : NULL;
 
 		$repo->saveEntity($item);
 

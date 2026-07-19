@@ -25,17 +25,25 @@
 		<div class="row">
 			{% for field in fields %}
 				<div class="cell-md-6 mb-3">
-					<label>{{ field.label }}</label>
-					{% if field.type == 'select' %}
-						<select name="config[{{ field.name }}]" data-role="select">
-							{% for opt, label in field.options %}
-								<option value="{{ opt }}" {% if opt == field.value %}selected{% endif %}>{{ label }}</option>
-							{% endfor %}
-						</select>
+					{% if field.type == 'checkbox' %}
+						<input type="hidden" name="config[{{ field.name }}]" value="0">
+						<input type="checkbox" data-role="checkbox" data-style="2"
+							name="config[{{ field.name }}]" value="1"
+							{% if field.value is same as(true) or field.value == '1' or field.value == 1 or field.value is same as('true') %}checked{% endif %}
+							data-caption="{{ field.label }}">
 					{% else %}
-						<input type="text" name="config[{{ field.name }}]" data-role="input" value="{{ field.value }}">
+						<label>{{ field.label }}</label>
+						{% if field.type == 'select' %}
+							<select name="config[{{ field.name }}]" data-role="select">
+								{% for opt, label in field.options %}
+									<option value="{{ opt }}" {% if opt == field.value %}selected{% endif %}>{{ label }}</option>
+								{% endfor %}
+							</select>
+						{% else %}
+							<input type="text" name="config[{{ field.name }}]" data-role="input" value="{{ field.value }}">
+						{% endif %}
 					{% endif %}
-					{% if field.help %}<small class="text-muted d-block mt-1">{{ field.help }}</small>{% endif %}
+					{% if field.help %}<small class="text-muted d-block mt-1">{{ field.help|raw }}</small>{% endif %}
 				</div>
 			{% endfor %}
 		</div>

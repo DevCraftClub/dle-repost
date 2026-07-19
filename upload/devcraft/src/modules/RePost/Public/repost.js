@@ -209,11 +209,146 @@
 		syncConditions();
 	}
 
+	function insertIntoEditor(code) {
+		var ed = null;
+		if (typeof tinymce !== 'undefined') {
+			ed = tinymce.get('template') || tinymce.activeEditor;
+			if (!ed) {
+				var nodes = tinymce.editors || [];
+				for (var i = 0; i < nodes.length; i++) {
+					if (nodes[i] && nodes[i].getElement && nodes[i].getElement().classList.contains('dc-repost-editor')) {
+						ed = nodes[i];
+						break;
+					}
+				}
+			}
+		}
+		if (ed && ed.insertContent) {
+			ed.insertContent(code);
+			return;
+		}
+		var ta = document.querySelector('textarea.dc-repost-editor, textarea[name="template"]');
+		if (!ta) {
+			return;
+		}
+		var start = ta.selectionStart || 0;
+		var end = ta.selectionEnd || 0;
+		var val = ta.value || '';
+		ta.value = val.slice(0, start) + code + val.slice(end);
+		ta.focus();
+		var pos = start + code.length;
+		if (ta.setSelectionRange) {
+			ta.setSelectionRange(pos, pos);
+		}
+	}
+
+	function toolbarForAllowed(tags) {
+		var set = {};
+		(tags || []).forEach(function (t) { set[String(t).toLowerCase()] = true; });
+		var parts = [];
+		if (set.b || set.strong) { parts.push('bold'); }
+		if (set.i || set.em) { parts.push('italic'); }
+		if (set.u || set.ins) { parts.push('underline'); }
+		if (set.s || set.strike || set.del) { parts.push('strikethrough'); }
+		if (set.a) { parts.push('link'); }
+		if (set.code || set.pre) { parts.push('code'); }
+		if (set.blockquote) { parts.push('blockquote'); }
+		return parts.length ? parts.join(' ') : '';
+	}
+
+	function validElementsFromTags(tags) {
+		if (!tags || !tags.length) {
+			return '';
+		}
+		return tags.map(function (t) {
+			t = String(t).toLowerCase();
+			if (t === 'a') {
+				return 'a[href|title]';
+			}
+			return t;
+		}).join(',');
+	}
+
+	function constrainTinyMce() {
+		var box = document.getElementById('repost-tag-chips');
+		if (!box || typeof tinymce === 'undefined') {
+			return;
+		}
+		var allowed = parseJsonAttr(box, 'data-allowed-html', []);
+		var toolbar = toolbarForAllowed(allowed);
+		var valid = validElementsFromTags(allowed);
+		(tinymce.editors || []).forEach(function (ed) {
+			if (!ed || !ed.getElement || !ed.getElement().classList.contains('dc-repost-editor')) {
+				return;
+			}
+			try {
+				if (valid !== undefined) {
+					ed.settings.valid_elements = valid || '@[id]';
+					ed.settings.extended_valid_elements = valid;
+				}
+				if (toolbar !== '') {
+					ed.settings.toolbar = toolbar;
+					var bar = ed.getContainer() && ed.getContainer().querySelector('.tox-toolbar__primary, .mce-toolbar-grp');
+					if (bar && ed.theme && ed.theme.panel) {
+						/* TinyMCE 4/5: пересоздать toolbar сложно — достаточно valid_elements */
+					}
+				}
+			} catch (e) { /* ignore */ }
+		});
+	}
+
+	function initTagChips() {
+		var box = document.getElementById('repost-tag-chips');
+		if (!box) {
+			return;
+		}
+		var hints = parseJsonAttr(box, 'data-hints', []);
+		box.innerHTML = '';
+		hints.forEach(function (h) {
+			if (!h || !h.code) {
+				return;
+			}
+			var btn = document.createElement('button');
+			btn.type = 'button';
+			btn.className = 'button small outline';
+			btn.textContent = h.tag || h.code;
+			btn.title = h.descr || h.code;
+			btn.setAttribute('data-code', h.code);
+			btn.addEventListener('click', function () {
+				insertIntoEditor(h.code);
+			});
+			box.appendChild(btn);
+		});
+		constrainTinyMce();
+	}
+
+	window.DevCraftRepost = window.DevCraftRepost || {};
+	window.DevCraftRepost.constrainTinyMce = constrainTinyMce;
+	window.DevCraftRepost.insertIntoEditor = insertIntoEditor;
+
 	document.addEventListener('DOMContentLoaded', function () {
 		bindForm('#repost-connection-form', 'connection_save');
 		bindForm('#repost-template-form', 'template_save');
 		bindForm('#repost-proxy-form', 'proxy_save');
 		initConditions();
+		initTagChips();
+
+		var connForm = document.getElementById('repost-connection-form');
+		if (connForm) {
+			var providerSelect = connForm.querySelector('select[name="provider"]');
+			if (providerSelect) {
+				providerSelect.addEventListener('change', function () {
+					var idInput = connForm.querySelector('input[name="id"]');
+					var id = idInput ? String(idInput.value || '0') : '0';
+					var code = providerSelect.value || 'telegram';
+					var url = '?mod=repost&action=edit_connection&provider=' + encodeURIComponent(code);
+					if (id && id !== '0') {
+						url += '&id=' + encodeURIComponent(id);
+					}
+					window.location.href = url;
+				});
+			}
+		}
 
 		document.querySelectorAll('[data-repost-delete]').forEach(function (btn) {
 			btn.addEventListener('click', function (e) {
@@ -321,5 +456,29 @@
 				});
 			});
 		}
+
+		document.addEventListener('click', function (event) {
+			var el = event.target.closest('[data-repost-copy-tag]');
+			if (!el) {
+				return;
+			}
+			event.preventDefault();
+			var text = el.getAttribute('data-repost-copy-tag') || '';
+			if (!text) {
+				return;
+			}
+			function done() {
+				if (window.DevCraft && DevCraft.Metro && typeof DevCraft.Metro.notifySuccess === 'function') {
+					DevCraft.Metro.notifySuccess('OK', 'Скопировано');
+				}
+			}
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(text).then(done).catch(function () {
+					window.prompt('Скопируйте тег', text);
+				});
+			} else {
+				window.prompt('Скопируйте тег', text);
+			}
+		});
 	});
 })();

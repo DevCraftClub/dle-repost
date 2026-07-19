@@ -24,7 +24,7 @@ final class TemplateRepository extends AbstractRepository {
 	 */
 	public function findActiveByEvent(string $eventType): array {
 		/** @var list<Template> $all */
-		$all = $this->select()->where('active', true)->orderBy('id')->fetchAll();
+		$all = $this->findActiveAll();
 		$out = [];
 
 		foreach($all as $tpl) {
@@ -36,6 +36,39 @@ final class TemplateRepository extends AbstractRepository {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * @return list<Template>
+	 */
+	public function findActiveAll(): array {
+		/** @var list<Template> */
+		return $this->select()->where('active', true)->orderBy('id')->fetchAll();
+	}
+
+	/**
+	 * Активные шаблоны по списку id (порядок как в БД).
+	 *
+	 * @param   list<int>  $ids
+	 *
+	 * @return list<Template>
+	 */
+	public function findActiveByIds(array $ids): array {
+		$ids = array_values(array_unique(array_filter(
+			array_map(static fn(mixed $v): int => (int) $v, $ids),
+			static fn(int $id): bool => $id > 0,
+		)));
+
+		if($ids === []) {
+			return [];
+		}
+
+		/** @var list<Template> */
+		return $this->select()
+			->where('active', true)
+			->where('id', 'in', $ids)
+			->orderBy('id')
+			->fetchAll();
 	}
 
 }

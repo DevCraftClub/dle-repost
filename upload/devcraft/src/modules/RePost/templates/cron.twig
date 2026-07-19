@@ -8,6 +8,9 @@
 			<th>{{ 'Шаблон'|trans }}</th>
 			<th>{{ 'Тип'|trans }}</th>
 			<th>{{ 'План'|trans }}</th>
+			<th>{{ 'Попытки'|trans }}</th>
+			<th>{{ 'Статус'|trans }}</th>
+			<th>{{ 'Ошибка'|trans }}</th>
 			<th></th>
 		</tr>
 		</thead>
@@ -19,13 +22,16 @@
 				<td>{{ item.template }}</td>
 				<td>{{ item.event_type }}</td>
 				<td>{{ item.planned }}</td>
+				<td>{{ item.attempts }}</td>
+				<td>{{ item.status }}</td>
+				<td class="text-small">{{ item.last_error }}</td>
 				<td class="text-right">
 					<button type="button" class="button small primary" data-repost-cron="send" data-id="{{ item.id }}">{{ 'Отправить'|trans }}</button>
 					<button type="button" class="button small alert" data-repost-cron="delete" data-id="{{ item.id }}">{{ 'Удалить'|trans }}</button>
 				</td>
 			</tr>
 		{% else %}
-			<tr><td colspan="6">{{ 'Очередь пуста'|trans }}</td></tr>
+			<tr><td colspan="9">{{ 'Очередь пуста'|trans }}</td></tr>
 		{% endfor %}
 		</tbody>
 	</table>

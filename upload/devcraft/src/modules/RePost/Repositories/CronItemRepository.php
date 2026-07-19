@@ -20,6 +20,8 @@ final class CronItemRepository extends AbstractRepository {
 	}
 
 	/**
+	 * Записи к отправке: pending и due.
+	 *
 	 * @return list<CronItem>
 	 */
 	public function findDue(int $limit): array {
@@ -27,6 +29,7 @@ final class CronItemRepository extends AbstractRepository {
 
 		/** @var list<CronItem> */
 		return $this->select()
+			->where('status', 'pending')
 			->where('planned', '<=', $now)
 			->orderBy('planned')
 			->limit($limit)

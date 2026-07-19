@@ -7,6 +7,7 @@ namespace DevCraft\Modules\RePost\Provider\Telegram;
 use DLEPlugins;
 use DevCraft\Types\FormSchema;
 use DevCraft\Modules\RePost\Provider\AbstractProvider;
+use DevCraft\Modules\RePost\Provider\TemplateTagsInterface;
 use DevCraft\Modules\RePost\Services\Dto\PostContext;
 use DevCraft\Modules\RePost\Services\Dto\RenderedMessage;
 use DevCraft\Modules\RePost\Services\Dto\SendResult;
@@ -38,6 +39,34 @@ final class TelegramProvider extends AbstractProvider {
 		return $schema;
 	}
 
+	public function templateTags(): TemplateTagsInterface {
+		return new TelegramTemplateTags();
+	}
+
+	/**
+	 * @return array{photo: int, video: int, audio: int, document: int}
+	 */
+	protected function mediaByteLimits(): array {
+		return [
+			'photo'    => MediaLimits::PHOTO_MAX_BYTES,
+			'video'    => MediaLimits::VIDEO_MAX_BYTES,
+			'audio'    => MediaLimits::AUDIO_MAX_BYTES,
+			'document' => MediaLimits::DOCUMENT_MAX_BYTES,
+		];
+	}
+
+	/**
+	 * @return array{photo: list<string>, video: list<string>, audio: list<string>, document: list<string>}
+	 */
+	public function allowedMediaExtensions(): array {
+		return [
+			'photo'    => MediaLimits::allowedImageExtensions(),
+			'video'    => MediaLimits::allowedVideoExtensions(),
+			'audio'    => ['mp3', 'm4a'],
+			'document' => [],
+		];
+	}
+
 	public function send(
 		PostContext $context,
 		RenderedMessage $message,
@@ -52,19 +81,35 @@ final class TelegramProvider extends AbstractProvider {
 			return $this->fail(__('Не заданы токен бота или chat id'));
 		}
 
-		$chat    = str_replace('%40', '@', $chat);
-		$text    = $this->clip($message->text, $type === 'text' ? MediaLimits::MESSAGE_MAX : MediaLimits::CAPTION_MAX);
-		$markup  = $this->buildReplyMarkup($message->buttons);
-		$bot     = TelegramBotFactory::create($token, $proxy);
-
 		try {
+			$filtered = $this->filterMediaByLimits($message);
+			$message  = $filtered['message'];
+			$skipped  = $filtered['skipped'];
+
+			if(in_array($type, ['photo', 'video', 'audio', 'document', 'media', 'media_video', 'media_audio', 'media_document'], true)
+				&& !$this->hasMediaForType($message, $type)
+			) {
+				return $this->fail(
+					__('Все файлы превышают лимит канала или недоступны'),
+					['skipped_oversized' => $skipped],
+				);
+			}
+
+			$chat   = str_replace('%40', '@', $chat);
+			$text   = $this->clip($message->text, $type === 'text' ? MediaLimits::MESSAGE_MAX : MediaLimits::CAPTION_MAX);
+			$markup = $this->buildReplyMarkup($message->buttons);
+			$bot    = TelegramBotFactory::create($token, $proxy);
+
 			$result = match($type) {
-				'photo'    => $this->sendPhoto($bot, $chat, $message, $text, $markup),
-				'audio'    => $this->sendAudio($bot, $chat, $message, $text, $markup),
-				'video'    => $this->sendVideo($bot, $chat, $message, $text, $markup),
-				'document' => $this->sendDocument($bot, $chat, $message, $text, $markup),
-				'media'    => $this->sendMedia($bot, $chat, $message, $text, $markup),
-				default    => $bot->call(new Method\SendMessage(
+				'photo'           => $this->sendPhoto($bot, $chat, $message, $text, $markup),
+				'audio'           => $this->sendAudioOne($bot, $chat, $message, $text, $markup),
+				'video'           => $this->sendVideoOne($bot, $chat, $message, $text, $markup),
+				'document'        => $this->sendDocument($bot, $chat, $message, $text, $markup),
+				'media'           => $this->sendMedia($bot, $chat, $message, $text, $markup),
+				'media_video'     => $this->sendMedia($bot, $chat, $message, $text, $markup),
+				'media_audio'     => $this->sendAudioGroup($bot, $chat, $message, $text, $markup),
+				'media_document'  => $this->sendDocumentGroup($bot, $chat, $message, $text, $markup),
+				default           => $bot->call(new Method\SendMessage(
 					chatId: $chat,
 					text: $text,
 					parseMode: 'HTML',
@@ -72,14 +117,44 @@ final class TelegramProvider extends AbstractProvider {
 				)),
 			};
 		} catch(\Throwable $e) {
-			return $this->fail($e->getMessage() !== '' ? $e->getMessage() : __('Ошибка Telegram API'));
+			return $this->fail($e->getMessage() !== '' ? $e->getMessage() : __('Ошибка Telegram API'), [
+				'skipped_oversized' => $skipped ?? [],
+			]);
+		} finally {
+			$this->cleanupTempMedia();
 		}
 
 		if($result instanceof SendResult) {
+			if(($skipped ?? []) !== []) {
+				$raw                      = $result->raw;
+				$raw['skipped_oversized'] = $skipped;
+
+				return $result->ok
+					? $this->ok($result->message, $raw)
+					: $this->fail($result->message, $raw);
+			}
+
 			return $result;
 		}
 
-		return $this->ok(__('Отправлено'), $this->toRaw($result));
+		$raw = $this->toRaw($result);
+
+		if(($skipped ?? []) !== []) {
+			$raw['skipped_oversized'] = $skipped;
+		}
+
+		return $this->ok(__('Отправлено'), $raw);
+	}
+
+	private function hasMediaForType(RenderedMessage $message, string $type): bool {
+		return match($type) {
+			'photo'          => $message->images !== [],
+			'video', 'media_video' => $message->videos !== [] || $message->images !== [],
+			'audio', 'media_audio' => $message->audios !== [],
+			'document'       => $message->images !== [] || $message->videos !== [] || $message->audios !== [],
+			'media', 'media_document' => $message->images !== [] || $message->videos !== [] || $message->audios !== [],
+			default          => true,
+		};
 	}
 
 	/**
@@ -136,7 +211,7 @@ final class TelegramProvider extends AbstractProvider {
 			return $this->fail(__('Нет изображения для sendPhoto'));
 		}
 
-		$media = $this->resolveMedia($photo);
+		$media = $this->resolveMedia($photo, 'photo');
 
 		if($media === null) {
 			return $this->fail(__('Файл изображения недоступен локально'));
@@ -152,87 +227,85 @@ final class TelegramProvider extends AbstractProvider {
 	}
 
 	/**
-	 * Каждый трек — отдельный SendAudio.
+	 * Одиночный audio — только первый файл.
 	 */
-	private function sendAudio(
+	private function sendAudioOne(
 		BotApi $bot,
 		string $chat,
 		RenderedMessage $message,
 		string $text,
 		?Type\InlineKeyboardMarkup $markup,
-	): SendResult {
-		if($message->audios === []) {
+	): Type\Message|SendResult {
+		$audio = $message->audios[0] ?? '';
+
+		if($audio === '') {
 			return $this->fail(__('Нет аудио для sendAudio'));
 		}
 
-		$raw   = [];
-		$sent  = 0;
-		$first = true;
+		$media = $this->resolveMedia($audio, 'audio');
 
-		foreach($message->audios as $audio) {
-			$media = $this->resolveMedia($audio);
-
-			if($media === null) {
-				continue;
-			}
-
-			$msg = $bot->call(new Method\SendAudio(
-				chatId: $chat,
-				audio: $media,
-				caption: $first ? $text : null,
-				parseMode: $first ? 'HTML' : null,
-				replyMarkup: $first ? $markup : null,
-			));
-			$raw[] = $this->toRaw($msg);
-			$sent++;
-			$first = false;
+		if($media === null) {
+			return $this->fail(__('Аудиофайл недоступен локально'));
 		}
 
-		return $sent > 0
-			? $this->ok(__('Отправлено'), ['messages' => $raw, 'count' => $sent])
-			: $this->fail(__('Аудиофайл недоступен локально'));
+		return $bot->call(new Method\SendAudio(
+			chatId: $chat,
+			audio: $media,
+			caption: $text,
+			parseMode: 'HTML',
+			thumbnail: $this->resolveThumb($message),
+			replyMarkup: $markup,
+		));
 	}
 
 	/**
-	 * Каждый файл — отдельный SendVideo.
+	 * Одиночный video — только первый файл.
 	 */
-	private function sendVideo(
+	private function sendVideoOne(
 		BotApi $bot,
 		string $chat,
 		RenderedMessage $message,
 		string $text,
 		?Type\InlineKeyboardMarkup $markup,
-	): SendResult {
-		if($message->videos === []) {
+	): Type\Message|SendResult {
+		$video = $message->videos[0] ?? '';
+
+		if($video === '') {
 			return $this->fail(__('Нет видео для sendVideo'));
 		}
 
-		$raw   = [];
-		$sent  = 0;
-		$first = true;
-
-		foreach($message->videos as $video) {
-			$media = $this->resolveMedia($video);
+		// SendVideo стабильно принимает MPEG-4; mkv/avi/… — как документ.
+		if(!$this->isTelegramNativeVideo($video)) {
+			$media = $this->resolveMedia($video, 'document');
 
 			if($media === null) {
-				continue;
+				return $this->fail(__('Видеофайл недоступен локально'));
 			}
 
-			$msg = $bot->call(new Method\SendVideo(
+			return $bot->call(new Method\SendDocument(
 				chatId: $chat,
-				video: $media,
-				caption: $first ? $text : null,
-				parseMode: $first ? 'HTML' : null,
-				replyMarkup: $first ? $markup : null,
+				document: $media,
+				caption: $text,
+				parseMode: 'HTML',
+				thumbnail: $this->resolveThumb($message),
+				replyMarkup: $markup,
 			));
-			$raw[] = $this->toRaw($msg);
-			$sent++;
-			$first = false;
 		}
 
-		return $sent > 0
-			? $this->ok(__('Отправлено'), ['messages' => $raw, 'count' => $sent])
-			: $this->fail(__('Видеофайл недоступен локально'));
+		$media = $this->resolveMedia($video, 'video');
+
+		if($media === null) {
+			return $this->fail(__('Видеофайл недоступен локально'));
+		}
+
+		return $bot->call(new Method\SendVideo(
+			chatId: $chat,
+			video: $media,
+			caption: $text,
+			parseMode: 'HTML',
+			thumbnail: $this->resolveThumb($message),
+			replyMarkup: $markup,
+		));
 	}
 
 	private function sendDocument(
@@ -242,13 +315,13 @@ final class TelegramProvider extends AbstractProvider {
 		string $text,
 		?Type\InlineKeyboardMarkup $markup,
 	): Type\Message|SendResult {
-		$doc = $message->images[0] ?? $message->videos[0] ?? '';
+		$doc = $message->images[0] ?? $message->videos[0] ?? $message->audios[0] ?? '';
 
 		if($doc === '') {
 			return $this->fail(__('Нет файла для sendDocument'));
 		}
 
-		$media = $this->resolveMedia($doc);
+		$media = $this->resolveMedia($doc, 'document');
 
 		if($media === null) {
 			return $this->fail(__('Документ недоступен локально'));
@@ -264,7 +337,7 @@ final class TelegramProvider extends AbstractProvider {
 	}
 
 	/**
-	 * Album photo/video; audio — отдельными SendAudio (Telegram не смешивает типы).
+	 * Album photo/video; несколько audio — одним SendMediaGroup (type=media).
 	 *
 	 * @return Type\Message|list<Type\Message>|SendResult
 	 */
@@ -287,13 +360,25 @@ final class TelegramProvider extends AbstractProvider {
 					replyMarkup: $markup,
 				));
 			}
-		} elseif(count($items) === 1) {
+
+			return $this->sendAudioGroup($bot, $chat, $message, $text, $markup);
+		}
+
+		if(count($items) === 1) {
 			$one = $items[0];
 
 			if($one instanceof Type\InputMediaPhoto) {
 				$raw[] = $this->toRaw($bot->call(new Method\SendPhoto(
 					chatId: $chat,
 					photo: $one->media,
+					caption: $one->caption ?? $text,
+					parseMode: 'HTML',
+					replyMarkup: $markup,
+				)));
+			} elseif($one instanceof Type\InputMediaDocument) {
+				$raw[] = $this->toRaw($bot->call(new Method\SendDocument(
+					chatId: $chat,
+					document: $one->media,
 					caption: $one->caption ?? $text,
 					parseMode: 'HTML',
 					replyMarkup: $markup,
@@ -314,51 +399,155 @@ final class TelegramProvider extends AbstractProvider {
 			)));
 		}
 
-		$audioFirst = $items === [];
-		$audioRes   = $this->sendAudioTracks(
-			$bot,
-			$chat,
-			$message->audios,
-			$audioFirst ? $text : '',
-			$audioFirst ? $markup : null,
-		);
+		if($message->audios !== []) {
+			$audioRes = $this->sendAudioGroup($bot, $chat, $message, '', null);
 
-		if($audioRes !== null) {
-			if(!$audioRes->ok && $raw === []) {
-				return $audioRes;
+			if($audioRes instanceof SendResult) {
+				if(!$audioRes->ok) {
+					$raw['audios_error'] = $audioRes->raw;
+				} else {
+					$raw['audios'] = $audioRes->raw;
+				}
+			} else {
+				$raw['audios'] = $this->toRaw($audioRes);
 			}
-
-			$raw['audios'] = $audioRes->raw;
 		}
 
-		return $raw === [] && $items === []
-			? $this->fail(__('Нет медиа для отправки'))
-			: $this->ok(__('Отправлено'), $raw);
+		return $this->ok(__('Отправлено'), $raw);
 	}
 
 	/**
-	 * @param   list<string>  $audios
+	 * Группа аудио (media_audio).
+	 *
+	 * @return Type\Message|list|SendResult
 	 */
-	private function sendAudioTracks(
+	private function sendAudioGroup(
 		BotApi $bot,
 		string $chat,
-		array $audios,
-		string $caption,
+		RenderedMessage $message,
+		string $text,
 		?Type\InlineKeyboardMarkup $markup,
-	): ?SendResult {
-		if($audios === []) {
-			return null;
+	): Type\Message|array|SendResult {
+		if($message->audios === []) {
+			return $this->fail(__('Нет аудио для media_audio'));
 		}
 
-		$tmp = new RenderedMessage(text: $caption, audios: $audios);
+		if(count($message->audios) === 1) {
+			return $this->sendAudioOne($bot, $chat, $message, $text, $markup);
+		}
 
-		return $this->sendAudio($bot, $chat, $tmp, $caption, $markup);
+		$items = [];
+		$n     = 0;
+
+		foreach($message->audios as $src) {
+			if(count($items) >= MediaLimits::MEDIA_GROUP_MAX) {
+				break;
+			}
+
+			$media = $this->resolveMedia($src, 'audio');
+
+			if($media === null) {
+				continue;
+			}
+
+			$cap     = ($n === 0 && $text !== '') ? $text : null;
+			$items[] = new Type\InputMediaAudio(
+				media: $media,
+				caption: $cap,
+				parseMode: $cap !== null ? 'HTML' : null,
+			);
+			$n++;
+		}
+
+		if($items === []) {
+			return $this->fail(__('Аудиофайлы недоступны локально'));
+		}
+
+		if(count($items) === 1) {
+			return $bot->call(new Method\SendAudio(
+				chatId: $chat,
+				audio: $items[0]->media,
+				caption: $text,
+				parseMode: 'HTML',
+				replyMarkup: $markup,
+			));
+		}
+
+		return $bot->call(new Method\SendMediaGroup(
+			chatId: $chat,
+			media: $items,
+		));
 	}
 
 	/**
-	 * Только photo/video для SendMediaGroup.
+	 * Группа документов (media_document).
 	 *
-	 * @return list<Type\InputMediaPhoto|Type\InputMediaVideo>
+	 * @return Type\Message|list|SendResult
+	 */
+	private function sendDocumentGroup(
+		BotApi $bot,
+		string $chat,
+		RenderedMessage $message,
+		string $text,
+		?Type\InlineKeyboardMarkup $markup,
+	): Type\Message|array|SendResult {
+		$sources = array_merge($message->images, $message->videos, $message->audios);
+
+		if($sources === []) {
+			return $this->fail(__('Нет файлов для media_document'));
+		}
+
+		if(count($sources) === 1) {
+			return $this->sendDocument($bot, $chat, $message, $text, $markup);
+		}
+
+		$items = [];
+		$n     = 0;
+
+		foreach($sources as $src) {
+			if(count($items) >= MediaLimits::MEDIA_GROUP_MAX) {
+				break;
+			}
+
+			$media = $this->resolveMedia($src, 'document');
+
+			if($media === null) {
+				continue;
+			}
+
+			$cap     = ($n === 0 && $text !== '') ? $text : null;
+			$items[] = new Type\InputMediaDocument(
+				media: $media,
+				caption: $cap,
+				parseMode: $cap !== null ? 'HTML' : null,
+			);
+			$n++;
+		}
+
+		if($items === []) {
+			return $this->fail(__('Файлы недоступны локально'));
+		}
+
+		if(count($items) === 1) {
+			return $bot->call(new Method\SendDocument(
+				chatId: $chat,
+				document: $items[0]->media,
+				caption: $text,
+				parseMode: 'HTML',
+				replyMarkup: $markup,
+			));
+		}
+
+		return $bot->call(new Method\SendMediaGroup(
+			chatId: $chat,
+			media: $items,
+		));
+	}
+
+	/**
+	 * photo / native video / прочее видео как document для SendMediaGroup.
+	 *
+	 * @return list<Type\InputMediaPhoto|Type\InputMediaVideo|Type\InputMediaDocument>
 	 */
 	private function buildMediaGroup(RenderedMessage $message, string $caption): array {
 		$items = [];
@@ -369,7 +558,9 @@ final class TelegramProvider extends AbstractProvider {
 				return;
 			}
 
-			$media = $this->resolveMedia($src);
+			$asDocument = $kind === 'video' && !$this->isTelegramNativeVideo($src);
+			$mediaKind  = $asDocument ? 'document' : $kind;
+			$media      = $this->resolveMedia($src, $mediaKind);
 
 			if($media === null) {
 				return;
@@ -378,9 +569,11 @@ final class TelegramProvider extends AbstractProvider {
 			$cap  = ($n === 0 && $caption !== '') ? $caption : null;
 			$mode = $cap !== null ? 'HTML' : null;
 
-			$items[] = $kind === 'video'
-				? new Type\InputMediaVideo(media: $media, caption: $cap, parseMode: $mode)
-				: new Type\InputMediaPhoto(media: $media, caption: $cap, parseMode: $mode);
+			$items[] = match(true) {
+				$asDocument     => new Type\InputMediaDocument(media: $media, caption: $cap, parseMode: $mode),
+				$kind === 'video' => new Type\InputMediaVideo(media: $media, caption: $cap, parseMode: $mode),
+				default         => new Type\InputMediaPhoto(media: $media, caption: $cap, parseMode: $mode),
+			};
 			$n++;
 		};
 
@@ -395,19 +588,48 @@ final class TelegramProvider extends AbstractProvider {
 		return $items;
 	}
 
-	/**
-	 * Локальный файл → InputFile; публичный URL → string; приватный хост без файла → null.
-	 */
-	private function resolveMedia(string $path): Type\InputFile|string|null {
-		$local = $this->localPath($path);
+	/** MPEG-4 для SendVideo / InputMediaVideo; иначе — документ. */
+	private function isTelegramNativeVideo(string $path): bool {
+		$path = trim($path);
 
-		if($local !== null) {
-			return new Type\InputFile($local);
+		if(str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+			$urlPath = parse_url($path, PHP_URL_PATH);
+			$path    = is_string($urlPath) ? $urlPath : $path;
 		}
 
-		$url = $this->toAbsoluteUrl($path);
+		$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-		return $this->isPrivateHostUrl($url) ? null : $url;
+		return $ext === 'mp4' || $ext === 'm4v';
+	}
+
+	/**
+	 * Локальный файл / скачанный URL → InputFile; иначе null.
+	 */
+	private function resolveMedia(string $path, string $kind = 'document'): Type\InputFile|string|null {
+		$local = $this->resolveLocalOrDownload($path);
+
+		if($local === null) {
+			return null;
+		}
+
+		$limit = MediaLimits::maxBytesFor($kind);
+		$bytes = @filesize($local);
+
+		if($limit > 0 && $bytes !== false && $bytes > $limit) {
+			return null;
+		}
+
+		return new Type\InputFile($local);
+	}
+
+	private function resolveThumb(RenderedMessage $message): Type\InputFile|string|null {
+		$thumb = trim((string) ($message->thumb ?? ''));
+
+		if($thumb === '') {
+			return null;
+		}
+
+		return $this->resolveMedia($thumb, 'photo');
 	}
 
 	/**
@@ -436,71 +658,6 @@ final class TelegramProvider extends AbstractProvider {
 		}
 
 		return new Type\InlineKeyboardMarkup(inlineKeyboard: $rows);
-	}
-
-	private function isPrivateHostUrl(string $url): bool {
-		$host = parse_url($url, PHP_URL_HOST);
-
-		if(!is_string($host) || $host === '') {
-			return true;
-		}
-
-		$host = strtolower($host);
-
-		if($host === 'localhost' || str_ends_with($host, '.test') || str_ends_with($host, '.local')
-			|| str_ends_with($host, '.localhost') || str_ends_with($host, '.invalid')
-		) {
-			return true;
-		}
-
-		if(filter_var($host, FILTER_VALIDATE_IP)) {
-			return filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Путь на диске, если файл лежит в uploads сайта.
-	 */
-	private function localPath(string $path): ?string {
-		global $config;
-
-		$path = trim(str_replace('\\', '/', $path));
-
-		if($path === '' || !defined('ROOT_DIR')) {
-			return null;
-		}
-
-		$candidates = [];
-
-		if(str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-			$home = rtrim((string) ($config['http_home_url'] ?? ''), '/');
-
-			if($home !== '' && str_starts_with($path, $home)) {
-				$rel          = ltrim(substr($path, strlen($home)), '/');
-				$candidates[] = ROOT_DIR . '/' . $rel;
-			}
-
-			$urlPath = parse_url($path, PHP_URL_PATH);
-
-			if(is_string($urlPath) && $urlPath !== '') {
-				$candidates[] = ROOT_DIR . $urlPath;
-			}
-		} elseif(str_starts_with($path, '/')) {
-			$candidates[] = ROOT_DIR . $path;
-			$candidates[] = $path;
-		} else {
-			$candidates[] = ROOT_DIR . '/' . ltrim($path, '/');
-		}
-
-		foreach($candidates as $candidate) {
-			if(is_file($candidate) && is_readable($candidate)) {
-				return $candidate;
-			}
-		}
-
-		return null;
 	}
 
 	private function toAbsoluteUrl(string $path): string {

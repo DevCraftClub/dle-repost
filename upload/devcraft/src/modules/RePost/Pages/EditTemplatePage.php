@@ -7,9 +7,11 @@ namespace DevCraft\Modules\RePost\Pages;
 use DLEPlugins;
 use DevCraft\Core\Application;
 use DevCraft\Core\Abstracts\AbstractPage;
-use DevCraft\Modules\RePost\Models\Connection;
 use DevCraft\Modules\RePost\Models\Proxy;
 use DevCraft\Modules\RePost\Models\Template;
+use DevCraft\Modules\RePost\Models\Connection;
+use DevCraft\Modules\RePost\Provider\ProviderRegistry;
+use DevCraft\Modules\RePost\Provider\DefaultTemplateTags;
 use DevCraft\Modules\RePost\Repositories\TemplateRepository;
 
 /**
@@ -23,10 +25,10 @@ final class EditTemplatePage extends AbstractPage {
 		$id = (int) ($_GET['id'] ?? 0);
 		/** @var TemplateRepository $repo */
 		$repo = Application::instance()->database()->repository(Template::class);
-		$item = $id > 0 ? $repo->findOneById($id) : null;
+		$item = $id > 0? $repo->findOneById($id) : NULL;
 
 		$this->addBreadcrumb(__('Шаблоны'), '?mod=repost&action=templates');
-		$this->addBreadcrumb($item ? __('Редактирование') : __('Новый шаблон'));
+		$this->addBreadcrumb($item? __('Редактирование') : __('Новый шаблон'));
 
 		$db = Application::instance()->database();
 		/** @var list<Connection> $conns */
@@ -49,11 +51,15 @@ final class EditTemplatePage extends AbstractPage {
 		$typeList = $item?->typeList() ?? ['addnews', 'editnews'];
 		$dleHome  = rtrim((string) ($config['http_home_url'] ?? '/'), '/') . '/';
 
+		$tagsHints   = $this->resolveTemplateHints($item, $conns);
+		$allowedHtml = $tagsHints['allowed_html_tags'];
+		$tagHints    = $tagsHints['hints'];
+
 		return [
 			'view' => 'repost/edit_template.twig',
 			'data' => [
-				'page_title'       => $item ? __('Редактирование шаблона') : __('Новый шаблон'),
-				'item'             => [
+				'page_title'         => $item? __('Редактирование шаблона') : __('Новый шаблон'),
+				'item'               => [
 					'id'                 => $item?->id() ?? 0,
 					'name'               => $item?->name ?? '',
 					'connection_id'      => $item?->connection_id ?? 0,
@@ -67,16 +73,82 @@ final class EditTemplatePage extends AbstractPage {
 					'use_proxy'          => $item?->use_proxy ?? false,
 					'proxy_id'           => $item?->proxy_id ?? 0,
 				],
-				'connections'      => $connOpts,
-				'proxies'          => $proxyOpts,
-				'condition_fields' => $this->buildConditionFields(),
-				'list_url'         => '?mod=repost&action=templates',
-				'dle_home'         => $dleHome,
-				'dle_skin'         => (string) ($config['skin'] ?? 'Default'),
-				'pm_wysiwyg'       => !empty($config['allow_pm_wysiwyg']),
-				'pm_editor_script' => $this->buildPmEditorScript(),
-				'dle_login_hash'   => (string) ($dle_login_hash ?? ''),
+				'connections'        => $connOpts,
+				'proxies'            => $proxyOpts,
+				'condition_fields'   => $this->buildConditionFields(),
+				'template_tag_hints' => $tagHints,
+				'allowed_html_tags'  => $allowedHtml,
+				'list_url'           => '?mod=repost&action=templates',
+				'dle_home'           => $dleHome,
+				'dle_skin'           => (string) ($config['skin'] ?? 'Default'),
+				'pm_wysiwyg'         => !empty($config['allow_pm_wysiwyg']),
+				'pm_editor_script'   => $this->buildPmEditorScript(),
+				'dle_login_hash'     => (string) ($dle_login_hash ?? ''),
 			],
+		];
+	}
+
+	/**
+	 * @param   list<Connection>  $conns
+	 *
+	 * @return array{hints: list<array{code: string, tag: string, descr: string, group: string}>, allowed_html_tags: list<string>}
+	 */
+	private function resolveTemplateHints(?Template $item, array $conns): array {
+		$providerCode = '';
+
+		if($item !== NULL && $item->connection_id > 0) {
+			foreach($conns as $c) {
+				if($c->id() === $item->connection_id) {
+					$providerCode = $c->provider;
+					break;
+				}
+			}
+		}
+
+		$tags = new DefaultTemplateTags();
+
+		if($providerCode !== '') {
+			$provider = ProviderRegistry::get($providerCode);
+
+			if($provider !== NULL) {
+				$tags = $provider->templateTags();
+			}
+		}
+
+		$hints = $tags->hints();
+
+		foreach(Application::instance()->dleData()->postXfields() as $name => $meta) {
+			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
+
+			if($key === '') {
+				continue;
+			}
+
+			$label   = is_array($meta)? (string) ($meta['description'] ?? $key) : $key;
+			$descr   = $label !== ''? $label : $key;
+			$hints[] = [
+				'code'  => '[xfvalue_' . $key . ']',
+				'tag'   => 'xfvalue_' . $key,
+				'descr' => $descr,
+				'group' => 'xfields',
+			];
+			$hints[] = [
+				'code'  => '[xfvalue_' . $key . '_text]',
+				'tag'   => 'xfvalue_' . $key . '_text',
+				'descr' => $descr . ' (текст без ссылок)',
+				'group' => 'xfields',
+			];
+			$hints[] = [
+				'code'  => '[xfvalue_' . $key . '_hashtag]',
+				'tag'   => 'xfvalue_' . $key . '_hashtag',
+				'descr' => $descr . ' (как хештеги)',
+				'group' => 'xfields',
+			];
+		}
+
+		return [
+			'hints'             => $hints,
+			'allowed_html_tags' => $tags->allowedHtmlTags(),
 		];
 	}
 
@@ -89,23 +161,23 @@ final class EditTemplatePage extends AbstractPage {
 		$dleData = Application::instance()->dleData();
 
 		$post = [
-			'autor'      => __('Автор'),
-			'date'       => __('Дата'),
-			'short_story'=> __('Короткое содержание'),
-			'full_story' => __('Полное содержание'),
-			'title'      => __('Заголовок'),
-			'descr'      => __('Описание'),
-			'keywords'   => __('Ключевые слова'),
-			'alt_name'   => __('ЧПУ Имя'),
-			'comm_num'   => __('Кол-во комментариев'),
-			'allow_comm' => __('Разрешить комментарии'),
-			'allow_main' => __('Вывод на главной'),
-			'approve'    => __('Проверено'),
-			'fixed'      => __('Фиксированная новость'),
-			'allow_br'   => __('Разрешить перенос строк'),
-			'symbol'     => __('Символ'),
-			'tags'       => __('Теги'),
-			'metatitle'  => __('Метазаголовок'),
+			'autor'       => __('Автор'),
+			'date'        => __('Дата'),
+			'short_story' => __('Короткое содержание'),
+			'full_story'  => __('Полное содержание'),
+			'title'       => __('Заголовок'),
+			'descr'       => __('Описание'),
+			'keywords'    => __('Ключевые слова'),
+			'alt_name'    => __('ЧПУ Имя'),
+			'comm_num'    => __('Кол-во комментариев'),
+			'allow_comm'  => __('Разрешить комментарии'),
+			'allow_main'  => __('Вывод на главной'),
+			'approve'     => __('Проверено'),
+			'fixed'       => __('Фиксированная новость'),
+			'allow_br'    => __('Разрешить перенос строк'),
+			'symbol'      => __('Символ'),
+			'tags'        => __('Теги'),
+			'metatitle'   => __('Метазаголовок'),
 		];
 
 		$postExtras = [
@@ -133,14 +205,14 @@ final class EditTemplatePage extends AbstractPage {
 		$xfields = [];
 
 		foreach($dleData->postXfields() as $name => $meta) {
-			$key = is_string($name) ? $name : (string) (is_array($meta) ? ($meta['name'] ?? '') : '');
+			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
 
 			if($key === '') {
 				continue;
 			}
 
-			$label         = is_array($meta) ? (string) ($meta['description'] ?? $key) : $key;
-			$xfields[$key] = $label !== '' ? $label : $key;
+			$label         = is_array($meta)? (string) ($meta['description'] ?? $key) : $key;
+			$xfields[$key] = $label !== ''? $label : $key;
 		}
 
 		$category = [];
@@ -164,17 +236,17 @@ final class EditTemplatePage extends AbstractPage {
 			return '';
 		}
 
-		if(!is_array($member_id ?? null)) {
+		if(!is_array($member_id ?? NULL)) {
 			$member_id = ['user_group' => 1, 'user_id' => 1, 'name' => ''];
 		}
 
-		if(!is_array($user_group ?? null) || $user_group === []) {
+		if(!is_array($user_group ?? NULL) || $user_group === []) {
 			$user_group = [
 				1 => ['allow_url' => 1, 'allow_image' => 1, 'group_name' => 'Admin'],
 			];
 		}
 
-		if(!is_array($lang ?? null)) {
+		if(!is_array($lang ?? NULL)) {
 			$lang = ['language_code' => 'ru', 'direction' => 'ltr'];
 		} else {
 			$lang['language_code'] = $lang['language_code'] ?? 'ru';
@@ -196,7 +268,7 @@ final class EditTemplatePage extends AbstractPage {
 		/** @noinspection PhpIncludeInspection */
 		include DLEPlugins::Check(ENGINE_DIR . '/editor/pm.php');
 
-		return isset($editor_scrips) ? (string) $editor_scrips : '';
+		return isset($editor_scrips)? (string) $editor_scrips : '';
 	}
 
 }

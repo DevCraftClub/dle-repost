@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Bootstrap + API отправки для хуков / парсеров.
  *
  * include DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php');
- * sendRepost($id, 'addnews'|'editnews');
+ * sendRepost($id, 'addnews'|'editnews', $options);
  */
 
 use DevCraft\Modules\RePost\Services\DispatchService;
@@ -21,19 +21,22 @@ if(!defined('DEVCRAFT_BOOTSTRAPPED')) {
 	return;
 }
 
+require_once DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost_news_form.php');
+
 if(!function_exists('sendRepost')) {
 	/**
 	 * Публикация новости через RePost.
 	 *
-	 * @param   int     $id    ID новости
-	 * @param   string  $type  addnews|editnews
+	 * @param   int                                $id       ID новости
+	 * @param   string                             $type     addnews|editnews
+	 * @param   array<string, mixed>               $options  defer / planned / template_mode / template_ids
 	 *
 	 * @return list<\DevCraft\Modules\RePost\Services\Dto\SendResult>
 	 */
-	function sendRepost(int $id, string $type = 'addnews'): array {
+	function sendRepost(int $id, string $type = 'addnews', array $options = []): array {
 		$dispatch = new DispatchService();
 
-		return $dispatch->dispatch($id, $type);
+		return $dispatch->dispatch($id, $type, $options);
 	}
 }
 

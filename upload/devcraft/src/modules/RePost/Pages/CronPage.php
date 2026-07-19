@@ -32,11 +32,14 @@ final class CronPage extends AbstractPage {
 
 		foreach($items as $item) {
 			$rows[] = [
-				'id'          => $item->id(),
-				'news_id'     => $item->news_id,
-				'template'    => $map[$item->template_id] ?? ('#' . $item->template_id),
-				'event_type'  => $item->event_type,
-				'planned'     => $item->planned->format('Y-m-d H:i:s'),
+				'id'         => $item->id(),
+				'news_id'    => $item->news_id,
+				'template'   => $map[$item->template_id] ?? ('#' . $item->template_id),
+				'event_type' => $item->event_type,
+				'planned'    => $item->planned->format('Y-m-d H:i:s'),
+				'attempts'   => $item->attempts,
+				'status'     => $item->status,
+				'last_error' => $item->last_error,
 			];
 		}
 

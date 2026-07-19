@@ -22,6 +22,7 @@ final readonly class RenderedMessage {
 		public array $audios = [],
 		public array $buttons = [],
 		public string $sendType = 'text',
+		public ?string $thumb = null,
 	) {}
 
 }

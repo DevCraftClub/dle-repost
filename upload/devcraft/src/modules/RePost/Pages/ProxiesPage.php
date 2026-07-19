@@ -18,7 +18,7 @@ final class ProxiesPage extends AbstractPage {
 
 		/** @var list<Proxy> $items */
 		$items = Application::instance()->database()->repository(Proxy::class)
-			->select()->orderBy('id', 'DESC')->fetchAll();
+		                    ->select()->orderBy('id', 'DESC')->fetchAll();
 
 		$rows = [];
 

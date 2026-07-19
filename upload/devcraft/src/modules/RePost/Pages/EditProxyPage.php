@@ -18,15 +18,15 @@ final class EditProxyPage extends AbstractPage {
 		$id = (int) ($_GET['id'] ?? 0);
 		/** @var ProxyRepository $repo */
 		$repo = Application::instance()->database()->repository(Proxy::class);
-		$item = $id > 0 ? $repo->findOneById($id) : null;
+		$item = $id > 0? $repo->findOneById($id) : NULL;
 
 		$this->addBreadcrumb(__('Прокси'), '?mod=repost&action=proxies');
-		$this->addBreadcrumb($item ? __('Редактирование') : __('Новый прокси'));
+		$this->addBreadcrumb($item? __('Редактирование') : __('Новый прокси'));
 
 		return [
 			'view' => 'repost/edit_proxy.twig',
 			'data' => [
-				'page_title' => $item ? __('Редактирование прокси') : __('Новый прокси'),
+				'page_title' => $item? __('Редактирование прокси') : __('Новый прокси'),
 				'item'       => [
 					'id'     => $item?->id() ?? 0,
 					'ip'     => $item?->ip ?? '',

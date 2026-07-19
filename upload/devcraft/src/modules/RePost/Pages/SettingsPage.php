@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DevCraft\Modules\RePost\Pages;
 
+use DevCraft\Core\Config\Paths;
+use DevCraft\Core\Support\DataManager;
 use DevCraft\Core\Abstracts\AbstractPage;
 use DevCraft\Core\Interfaces\SettingsPageInterface;
-use DevCraft\Core\Support\DataManager;
-use DevCraft\Core\Config\Paths;
 
 /**
  * Настройки RePost.

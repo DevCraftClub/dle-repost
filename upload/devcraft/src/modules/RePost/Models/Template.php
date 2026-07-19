@@ -48,7 +48,7 @@ class Template extends AbstractEntity {
 	public bool $use_proxy = false;
 
 	#[Column(type: 'integer', nullable: true, unsigned: true)]
-	public ?int $proxy_id = null;
+	public ?int $proxy_id = NULL;
 
 	public function __construct() {
 		$this->createdAt = new \DateTimeImmutable();
@@ -60,7 +60,7 @@ class Template extends AbstractEntity {
 	public function getConditionArray(): array {
 		$decoded = json_decode($this->condition, true);
 
-		return is_array($decoded) ? $decoded : [];
+		return is_array($decoded)? $decoded : [];
 	}
 
 	/**
@@ -81,18 +81,18 @@ class Template extends AbstractEntity {
 
 	public function getColumnVal(string $name): mixed {
 		return match ($name) {
-			'id'                  => $this->id(),
-			'name'                => $this->name,
-			'connection_id'       => $this->connection_id,
-			'condition'           => $this->condition,
-			'condition_relation'  => $this->condition_relation,
-			'template_type'       => $this->template_type,
-			'template'            => $this->template,
-			'active'              => $this->active,
-			'cron'                => $this->cron,
-			'use_proxy'           => $this->use_proxy,
-			'proxy_id'            => $this->proxy_id,
-			default               => null,
+			'id'                 => $this->id(),
+			'name'               => $this->name,
+			'connection_id'      => $this->connection_id,
+			'condition'          => $this->condition,
+			'condition_relation' => $this->condition_relation,
+			'template_type'      => $this->template_type,
+			'template'           => $this->template,
+			'active'             => $this->active,
+			'cron'               => $this->cron,
+			'use_proxy'          => $this->use_proxy,
+			'proxy_id'           => $this->proxy_id,
+			default              => NULL,
 		};
 	}
 

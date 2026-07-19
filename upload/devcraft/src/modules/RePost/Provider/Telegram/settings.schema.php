@@ -19,12 +19,15 @@ return FormSchemaBuilder::create('repost_telegram_connection')
 			->default('')
 		->select('tg_send_type', __('Тип отправки'))
 			->options([
-				'text'     => __('Текст'),
-				'media'    => __('Медиагруппа'),
-				'photo'    => __('Фото'),
-				'audio'    => __('Аудио'),
-				'video'    => __('Видео'),
-				'document' => __('Документ'),
+				'text'            => __('Текст'),
+				'media'           => __('Медиа — все'),
+				'media_video'     => __('Медиа — только видео'),
+				'media_audio'     => __('Медиа — только аудио'),
+				'media_document'  => __('Медиа — только файлы'),
+				'photo'           => __('Фото'),
+				'audio'           => __('Аудио'),
+				'video'           => __('Видео'),
+				'document'        => __('Документ'),
 			])
 			->default('text')
 	->build();
