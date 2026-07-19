@@ -1,3 +1,4 @@
+# Замените devcraft.xliff на имя вашего плагина, например: my-plugin.xliff
 files:
-  - source: /upload/engine/inc/maharder/_locales/ru_RU/mhadmin.xliff
-    translation: /upload/engine/inc/maharder/_locales/%locale_with_underscore%/%file_name%.%file_extension%
+  - source: /upload/devcraft/locales/ru_RU/devcraft.xliff
+    translation: /upload/devcraft/locales/%locale_with_underscore%/%file_name%.%file_extension%
