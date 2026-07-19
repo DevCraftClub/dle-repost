@@ -15,31 +15,7 @@ steps:
         from_secret: GH_USER
       DEBIAN_FRONTEND: noninteractive
     commands:
-      # $${...} — shell-переменные; иначе Woodpecker обнуляет ${...} до запуска
       - apt-get update && apt-get install -y --no-install-recommends git curl jq ca-certificates
       - git fetch --unshallow || true
-      - |
-        set -euo pipefail
-        test -n "$${GH_USER}" || { echo "Секрет GH_USER пуст"; exit 1; }
-        test -n "$${GH_ACCESS_TOKEN}" || { echo "Секрет GH_ACCESS_TOKEN пуст"; exit 1; }
-        test -f manifest.json || { echo "manifest.json не найден"; ls -la; exit 1; }
-        VERSION=$$(jq -r '.version' manifest.json)
-        test -n "$${VERSION}" && test "$${VERSION}" != "null"
-        BRANCH="releases/v$${VERSION}"
-        TAG="v-$${VERSION}-auto"
-        echo "VERSION=$${VERSION} BRANCH=$${BRANCH} TAG=$${TAG}"
-        git remote remove github 2>/dev/null || true
-        git remote add github "https://$${GH_USER}:$${GH_ACCESS_TOKEN}@github.com/DevCraftClub/dle-repost.git"
-        git push github "HEAD:refs/heads/$${BRANCH}" --force
-        curl -sf -X POST \
-          -H "Authorization: token $${GH_ACCESS_TOKEN}" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/DevCraftClub/dle-repost/pulls \
-          -d "$$(jq -n --arg title "Release v$${VERSION}" --arg head "$${BRANCH}" --arg base "main" --arg body "Автоматический релиз v$${VERSION}" '{title:$$title, head:$$head, base:$$base, body:$$body}')" \
-          || echo "PR уже существует или не создан — продолжаю"
-        curl -sf -X POST \
-          -H "Authorization: token $${GH_ACCESS_TOKEN}" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/DevCraftClub/dle-repost/releases \
-          -d "$$(jq -n --arg tag "$${TAG}" --arg target "$${BRANCH}" --arg name "Release v$${VERSION}" --arg body "Автоматический релиз версии $${VERSION}" '{tag_name:$$tag, target_commitish:$$target, name:$$name, body:$$body}')" \
-          || echo "Release с этим тегом уже существует — продолжаю"
+      - chmod +x .woodpecker/publish-github.sh
+      - .woodpecker/publish-github.sh
