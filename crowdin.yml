@@ -1,4 +1,3 @@
-# Замените devcraft.xliff на имя вашего плагина, например: my-plugin.xliff
 files:
-  - source: /upload/devcraft/locales/ru_RU/devcraft.xliff
+  - source: /upload/devcraft/locales/ru_RU/repost.xliff
     translation: /upload/devcraft/locales/%locale_with_underscore%/%file_name%.%file_extension%
