@@ -1,0 +1,1011 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="repost.ru_RU" datatype="plaintext" source-language="ru" target-language="en">
+    <body>
+      <trans-unit id="09c2862b5c82215992815b92f9303b50">
+        <source>Публикация новостей в социальные сети (Telegram и провайдеры)</source>
+        <target state="needs-translation">Публикация новостей в социальные сети (Telegram и провайдеры)</target>
+      </trans-unit>
+      <trans-unit id="8863d198a4fa732b0bda9182a7c0ea91">
+        <source>Подключения</source>
+        <target state="needs-translation">Подключения</target>
+      </trans-unit>
+      <trans-unit id="fd4a65755652573907656d02b16b58a4">
+        <source>Шаблоны</source>
+        <target state="needs-translation">Шаблоны</target>
+      </trans-unit>
+      <trans-unit id="4c987aabd5d84bf3c8ae49a36fb5db11">
+        <source>Очередь</source>
+        <target state="needs-translation">Очередь</target>
+      </trans-unit>
+      <trans-unit id="7b5623cb57a35bf7972d4cd49bd0f498">
+        <source>Новость не найдена</source>
+        <target state="needs-translation">Новость не найдена</target>
+      </trans-unit>
+      <trans-unit id="279ae92bd1628aae5962c91bddc40869">
+        <source>Не выбран шаблон</source>
+        <target state="needs-translation">Не выбран шаблон</target>
+      </trans-unit>
+      <trans-unit id="07f4ed46af22a48559d155344055ac68">
+        <source>Нет подходящих шаблонов</source>
+        <target state="needs-translation">Нет подходящих шаблонов</target>
+      </trans-unit>
+      <trans-unit id="bf7d2bf8b7d4608e5b64f7bd5c531687">
+        <source>Шаблон очереди не найден</source>
+        <target state="needs-translation">Шаблон очереди не найден</target>
+      </trans-unit>
+      <trans-unit id="4ea078ad0035a06a57232ed6b854c5fb">
+        <source>Подключение шаблона неактивно или не найдено</source>
+        <target state="needs-translation">Подключение шаблона неактивно или не найдено</target>
+      </trans-unit>
+      <trans-unit id="8a41992edf237eb538e3220d63696316">
+        <source>Провайдер не найден: {code}</source>
+        <target state="needs-translation">Провайдер не найден: {code}</target>
+      </trans-unit>
+      <trans-unit id="f0f906a16bd20a6f0b2ab0d73fe4f6c3">
+        <source>Добавлено в очередь</source>
+        <target state="needs-translation">Добавлено в очередь</target>
+      </trans-unit>
+      <trans-unit id="a3986f0761218107a2ec10420f32cb8c">
+        <source>копия</source>
+        <target state="needs-translation">копия</target>
+      </trans-unit>
+      <trans-unit id="047f5653b183292396e67f14c8750b73">
+        <source>Главная</source>
+        <target state="needs-translation">Главная</target>
+      </trans-unit>
+      <trans-unit id="e0a6427b55d114e4fda3974b02301f4b">
+        <source>Теги шаблонов</source>
+        <target state="needs-translation">Теги шаблонов</target>
+      </trans-unit>
+      <trans-unit id="ed903f8795fd10952fad22978b2f06d9">
+        <source>Прокси</source>
+        <target state="needs-translation">Прокси</target>
+      </trans-unit>
+      <trans-unit id="c919d65bd95698af8f15fa8133bf490d">
+        <source>Настройки</source>
+        <target state="needs-translation">Настройки</target>
+      </trans-unit>
+      <trans-unit id="593c9576a2a5b74de0d875b0af564132">
+        <source>Журнал изменений</source>
+        <target state="needs-translation">Журнал изменений</target>
+      </trans-unit>
+      <trans-unit id="3736b2a91903d78a73dd07299feafcf5">
+        <source>Миграция на DevCraft Admin: multi-provider ядро, Telegram как эталон</source>
+        <target state="needs-translation">Миграция на DevCraft Admin: multi-provider ядро, Telegram как эталон</target>
+      </trans-unit>
+      <trans-unit id="2e2411dcc2d395ca8c355eaa4eb5ad6b">
+        <source>Несколько подключений API и шаблонов с привязкой к подключению</source>
+        <target state="needs-translation">Несколько подключений API и шаблонов с привязкой к подключению</target>
+      </trans-unit>
+      <trans-unit id="c50a0b3433f4bc1903fd4b4efe316d0b">
+        <source>Очередь cron, прокси, автопостинг через install.xml</source>
+        <target state="needs-translation">Очередь cron, прокси, автопостинг через install.xml</target>
+      </trans-unit>
+      <trans-unit id="0dc80a9ac7bf95f578508c60747a38f3">
+        <source>Парсинг xfields audio/video; фильтр медиа по tg_send_type</source>
+        <target state="needs-translation">Парсинг xfields audio/video; фильтр медиа по tg_send_type</target>
+      </trans-unit>
+      <trans-unit id="c8fee800e7791a11370c43e9067bad20">
+        <source>Подтипы media/media_video/media_audio/media_document; одиночные типы — первый файл</source>
+        <target state="needs-translation">Подтипы media/media_video/media_audio/media_document; одиночные типы — первый файл</target>
+      </trans-unit>
+      <trans-unit id="f7adf285b25b1c312bb2aeb9113eacbb">
+        <source>TemplateTagsInterface + чипы тегов и HTML-allowlist канала в редакторе</source>
+        <target state="needs-translation">TemplateTagsInterface + чипы тегов и HTML-allowlist канала в редакторе</target>
+      </trans-unit>
+      <trans-unit id="eba272e25e006410714269ac42b1ea6a">
+        <source>Селекторы repost_media_* (image/max/url), tags_no_link, xfvalue_*_text/hashtag, thumb</source>
+        <target state="needs-translation">Селекторы repost_media_* (image/max/url), tags_no_link, xfvalue_*_text/hashtag, thumb</target>
+      </trans-unit>
+      <trans-unit id="6b84d83de7c134a7f77048822c98a956">
+        <source>allowedMediaExtensions + скачивание внешних url= на сервер</source>
+        <target state="needs-translation">allowedMediaExtensions + скачивание внешних url= на сервер</target>
+      </trans-unit>
+      <trans-unit id="1c36d3db76c0e4ff30ecb6e70f8a5ae7">
+        <source>Справочник «Теги шаблонов» в админке (hints / HTML / расширения)</source>
+        <target state="needs-translation">Справочник «Теги шаблонов» в админке (hints / HTML / расширения)</target>
+      </trans-unit>
+      <trans-unit id="00cf5392f3efca7b4052f7cfd587539b">
+        <source>AbstractProvider и контракт канала доставки</source>
+        <target state="needs-translation">AbstractProvider и контракт канала доставки</target>
+      </trans-unit>
+      <trans-unit id="7af04bc5386f30da06668b5f850b126b">
+        <source>Копирование подключений, прокси и шаблонов</source>
+        <target state="needs-translation">Копирование подключений, прокси и шаблонов</target>
+      </trans-unit>
+      <trans-unit id="d0b945f75687abc06877949970d9fc7f">
+        <source>Логирование отправки через LogGenerator (error/info/debug)</source>
+        <target state="needs-translation">Логирование отправки через LogGenerator (error/info/debug)</target>
+      </trans-unit>
+      <trans-unit id="1798af196f9e46e3c0696d1d528cf369">
+        <source>DLE-теги через ParseTemplateTags; префикс медиа-тегов [repost_media_*]</source>
+        <target state="needs-translation">DLE-теги через ParseTemplateTags; префикс медиа-тегов [repost_media_*]</target>
+      </trans-unit>
+      <trans-unit id="89315b745b04ee199f2bc29dda75aa1c">
+        <source>Telegram: album photo/video; media_audio/document через группу; одиночные — один файл</source>
+        <target state="needs-translation">Telegram: album photo/video; media_audio/document через группу; одиночные — один файл</target>
+      </trans-unit>
+      <trans-unit id="c2031659d1129d1e583f1aca47c1939d">
+        <source>Список шаблонов: колонка прокси (Нет / Случайный / ip:port)</source>
+        <target state="needs-translation">Список шаблонов: колонка прокси (Нет / Случайный / ip:port)</target>
+      </trans-unit>
+      <trans-unit id="e658907807c8021003382c3301320c2f">
+        <source>Тихие сбои отправки без записи в Admin logs</source>
+        <target state="needs-translation">Тихие сбои отправки без записи в Admin logs</target>
+      </trans-unit>
+      <trans-unit id="2f4e7163353b62c874a2ee672bf9d5b3">
+        <source>Зависимость от MH Admin и engine/ajax/maharder/*</source>
+        <target state="needs-translation">Зависимость от MH Admin и engine/ajax/maharder/*</target>
+      </trans-unit>
+      <trans-unit id="1167e787a81a5549bc895f4c61dcba4b">
+        <source>Редактирование</source>
+        <target state="needs-translation">Редактирование</target>
+      </trans-unit>
+      <trans-unit id="7c8c1c983fc907f00eed6b1fcba25b7c">
+        <source>Новое подключение</source>
+        <target state="needs-translation">Новое подключение</target>
+      </trans-unit>
+      <trans-unit id="0619f1b6d1a683e521f9317e5fbe51db">
+        <source>Редактирование подключения</source>
+        <target state="needs-translation">Редактирование подключения</target>
+      </trans-unit>
+      <trans-unit id="03145079b1f0763f316fc0c376b3db5d">
+        <source>Новый шаблон</source>
+        <target state="needs-translation">Новый шаблон</target>
+      </trans-unit>
+      <trans-unit id="abd0c31eabb386be350bd8512922b6c4">
+        <source>— случайный активный —</source>
+        <target state="needs-translation">— случайный активный —</target>
+      </trans-unit>
+      <trans-unit id="407ac071794ab71e696ba55a8a98e11a">
+        <source>Редактирование шаблона</source>
+        <target state="needs-translation">Редактирование шаблона</target>
+      </trans-unit>
+      <trans-unit id="7c7d054bc5ae9c0d93b69431dfdf2264">
+        <source>Автор</source>
+        <target state="needs-translation">Автор</target>
+      </trans-unit>
+      <trans-unit id="8cdd8bb771bcf038dfb2740fd50b332c">
+        <source>Дата</source>
+        <target state="needs-translation">Дата</target>
+      </trans-unit>
+      <trans-unit id="6418fff1c1bb0f812528eacd276b10b3">
+        <source>Короткое содержание</source>
+        <target state="needs-translation">Короткое содержание</target>
+      </trans-unit>
+      <trans-unit id="5a7ceb4db78e5ebe67854d7e30a00ca7">
+        <source>Полное содержание</source>
+        <target state="needs-translation">Полное содержание</target>
+      </trans-unit>
+      <trans-unit id="2e9d7991efe99efaf9cf325b6f10d8a0">
+        <source>Заголовок</source>
+        <target state="needs-translation">Заголовок</target>
+      </trans-unit>
+      <trans-unit id="38ca0af80cd7bd241500e81ba2e6efff">
+        <source>Описание</source>
+        <target state="needs-translation">Описание</target>
+      </trans-unit>
+      <trans-unit id="83dc72c7b853982cd4d3cbddf0254061">
+        <source>Ключевые слова</source>
+        <target state="needs-translation">Ключевые слова</target>
+      </trans-unit>
+      <trans-unit id="de7913c8e449025a8756133f9091aed4">
+        <source>ЧПУ Имя</source>
+        <target state="needs-translation">ЧПУ Имя</target>
+      </trans-unit>
+      <trans-unit id="1f88bbe820a77169b07e03402e38f7f1">
+        <source>Кол-во комментариев</source>
+        <target state="needs-translation">Кол-во комментариев</target>
+      </trans-unit>
+      <trans-unit id="a94208dd57b1535ac8db57ee2ea3902e">
+        <source>Разрешить комментарии</source>
+        <target state="needs-translation">Разрешить комментарии</target>
+      </trans-unit>
+      <trans-unit id="67cf17f261383c76d1e47cebe036c35d">
+        <source>Вывод на главной</source>
+        <target state="needs-translation">Вывод на главной</target>
+      </trans-unit>
+      <trans-unit id="a0b118653194950b2eec6f96373e3260">
+        <source>Проверено</source>
+        <target state="needs-translation">Проверено</target>
+      </trans-unit>
+      <trans-unit id="8a2ae7523929469f7e8c9b3e165e7a1b">
+        <source>Фиксированная новость</source>
+        <target state="needs-translation">Фиксированная новость</target>
+      </trans-unit>
+      <trans-unit id="c333b3e233d99e7e0a35dc6610609b85">
+        <source>Разрешить перенос строк</source>
+        <target state="needs-translation">Разрешить перенос строк</target>
+      </trans-unit>
+      <trans-unit id="de3a206f3504f68f920c4e3c7b8b59ea">
+        <source>Символ</source>
+        <target state="needs-translation">Символ</target>
+      </trans-unit>
+      <trans-unit id="54f067a401b1d97fb64ed2e6767094e0">
+        <source>Теги</source>
+        <target state="needs-translation">Теги</target>
+      </trans-unit>
+      <trans-unit id="351377661ae10714f207881c7a717744">
+        <source>Метазаголовок</source>
+        <target state="needs-translation">Метазаголовок</target>
+      </trans-unit>
+      <trans-unit id="47c7eeff35bed162b038f3033c5df2cd">
+        <source>Кол-во прочтений</source>
+        <target state="needs-translation">Кол-во прочтений</target>
+      </trans-unit>
+      <trans-unit id="c65e131815197aa089434e1cf4ca57b2">
+        <source>Разрешить рейтинг</source>
+        <target state="needs-translation">Разрешить рейтинг</target>
+      </trans-unit>
+      <trans-unit id="304ce2c8c71568195da204b85122598a">
+        <source>Рейтинг</source>
+        <target state="needs-translation">Рейтинг</target>
+      </trans-unit>
+      <trans-unit id="79a352b9537ba1b321f4fb635543a5bd">
+        <source>ID Опроса</source>
+        <target state="needs-translation">ID Опроса</target>
+      </trans-unit>
+      <trans-unit id="98fa1dc6afa0721fc3f31e4b24fd0146">
+        <source>Кол-во голосов</source>
+        <target state="needs-translation">Кол-во голосов</target>
+      </trans-unit>
+      <trans-unit id="7dd00f50cda423053ddb30fbbc16134b">
+        <source>Запретить индексирование</source>
+        <target state="needs-translation">Запретить индексирование</target>
+      </trans-unit>
+      <trans-unit id="d8b99945d3426010f44d8723e9767944">
+        <source>Похожие новости</source>
+        <target state="needs-translation">Похожие новости</target>
+      </trans-unit>
+      <trans-unit id="dbf2fcc8d96e960a90917b8733fbd804">
+        <source>Доступ</source>
+        <target state="needs-translation">Доступ</target>
+      </trans-unit>
+      <trans-unit id="0c6f9e8c2677d795ca5422cb86517922">
+        <source>Время редактирования</source>
+        <target state="needs-translation">Время редактирования</target>
+      </trans-unit>
+      <trans-unit id="7e2554f86f1c02efe1b063981afad801">
+        <source>Редактор</source>
+        <target state="needs-translation">Редактор</target>
+      </trans-unit>
+      <trans-unit id="d88300c7c0b7740f87529906ba91cb7f">
+        <source>Причина</source>
+        <target state="needs-translation">Причина</target>
+      </trans-unit>
+      <trans-unit id="b5f52efcbf4eb2259d927cbdf805317c">
+        <source>ID автора</source>
+        <target state="needs-translation">ID автора</target>
+      </trans-unit>
+      <trans-unit id="5b20ca74e786bc51e9dee5667f040854">
+        <source>Исключить из поиска</source>
+        <target state="needs-translation">Исключить из поиска</target>
+      </trans-unit>
+      <trans-unit id="5d539d3dfd28187accc1f136b2a104b4">
+        <source>Нужен пароль</source>
+        <target state="needs-translation">Нужен пароль</target>
+      </trans-unit>
+      <trans-unit id="c714f6d051d19c6cb49bbe404543f5f7">
+        <source>Разрешить вывод в RSS-ленту</source>
+        <target state="needs-translation">Разрешить вывод в RSS-ленту</target>
+      </trans-unit>
+      <trans-unit id="0a264aec296c6e112e2bd87cfbd4a3ee">
+        <source>Разрешить вывод в Турбо-ленту</source>
+        <target state="needs-translation">Разрешить вывод в Турбо-ленту</target>
+      </trans-unit>
+      <trans-unit id="6675a0d5fcd5f5ce7b8d3cc66c9c550f">
+        <source>Разрешить Дзен</source>
+        <target state="needs-translation">Разрешить Дзен</target>
+      </trans-unit>
+      <trans-unit id="eaf77d4ad8daf1b61b3c487a2d5ae699">
+        <source>Новый прокси</source>
+        <target state="needs-translation">Новый прокси</target>
+      </trans-unit>
+      <trans-unit id="5a556071310e4caccfd8f8a9d743d10c">
+        <source>Редактирование прокси</source>
+        <target state="needs-translation">Редактирование прокси</target>
+      </trans-unit>
+      <trans-unit id="d0cd2248137f1acac2e79777d856305e">
+        <source>Нет</source>
+        <target state="needs-translation">Нет</target>
+      </trans-unit>
+      <trans-unit id="8c814b59796ebbd31a539bd8af05a77c">
+        <source>Случайный</source>
+        <target state="needs-translation">Случайный</target>
+      </trans-unit>
+      <trans-unit id="e25ea2585d3685b7aad026194546bb70">
+        <source>Основные</source>
+        <target state="needs-translation">Основные</target>
+      </trans-unit>
+      <trans-unit id="d17949a0646356befa8bac9a60be02e3">
+        <source>Разделитель хештегов</source>
+        <target state="needs-translation">Разделитель хештегов</target>
+      </trans-unit>
+      <trans-unit id="fa124c49e46513f9d7b6e01124c3c359">
+        <source>Разделитель тегов</source>
+        <target state="needs-translation">Разделитель тегов</target>
+      </trans-unit>
+      <trans-unit id="57c801f7a3a988aa77e8045ad8dacb69">
+        <source>Разделитель категорий</source>
+        <target state="needs-translation">Разделитель категорий</target>
+      </trans-unit>
+      <trans-unit id="3aceccd9879f572fe8e1d267876849d0">
+        <source>Плейсхолдер превью (URL)</source>
+        <target state="needs-translation">Плейсхолдер превью (URL)</target>
+      </trans-unit>
+      <trans-unit id="885f8b3958458cde74c4ed0d85260fe9">
+        <source>Разрешённые расширения изображений</source>
+        <target state="needs-translation">Разрешённые расширения изображений</target>
+      </trans-unit>
+      <trans-unit id="9c3af82e5cde74489d24cd4cdb197a0b">
+        <source>Через запятую: jpg,jpeg,png,gif,webp</source>
+        <target state="needs-translation">Через запятую: jpg,jpeg,png,gif,webp</target>
+      </trans-unit>
+      <trans-unit id="1b793db6c00482d633b29701c7bcb08c">
+        <source>Cron</source>
+        <target state="needs-translation">Cron</target>
+      </trans-unit>
+      <trans-unit id="c35cdb9a78a020753c476f2031c2fdbb">
+        <source>Очередь для шаблонов с флагом «В очередь cron»</source>
+        <target state="needs-translation">Очередь для шаблонов с флагом «В очередь cron»</target>
+      </trans-unit>
+      <trans-unit id="70659b35b57769d89b33426d35fbb5d0">
+        <source>Если включено — шаблоны с флагом «В очередь cron» ставятся в очередь (режим «настройка шаблона» на форме новости). Обработка: авто-cron DLE ($config['cron']) → engine/modules/cron.php → repostRunCron(). На форме новости можно принудительно отложить или отправить сразу.</source>
+        <target state="needs-translation">Если включено — шаблоны с флагом «В очередь cron» ставятся в очередь (режим «настройка шаблона» на форме новости). Обработка: авто-cron DLE ($config['cron']) → engine/modules/cron.php → repostRunCron(). На форме новости можно принудительно отложить или отправить сразу.</target>
+      </trans-unit>
+      <trans-unit id="1337a57e0afdbe1e2f59e36180098966">
+        <source>Новостей за один проход cron</source>
+        <target state="needs-translation">Новостей за один проход cron</target>
+      </trans-unit>
+      <trans-unit id="282f906d135a6e475a63015640031588">
+        <source>Задержка между отправками (сек)</source>
+        <target state="needs-translation">Задержка между отправками (сек)</target>
+      </trans-unit>
+      <trans-unit id="041bb4352ca062e62c42d849866a6d1b">
+        <source>Интервал повтора при ошибке/таймауте (сек)</source>
+        <target state="needs-translation">Интервал повтора при ошибке/таймауте (сек)</target>
+      </trans-unit>
+      <trans-unit id="2dd12f7366f90e9a876543ec55bd3ee5">
+        <source>Максимум попыток отправки</source>
+        <target state="needs-translation">Максимум попыток отправки</target>
+      </trans-unit>
+      <trans-unit id="ecd511f54e323a56e2823ce12b0f3725">
+        <source>Удалять запись очереди после успешной отправки</source>
+        <target state="needs-translation">Удалять запись очереди после успешной отправки</target>
+      </trans-unit>
+      <trans-unit id="dd6408c912ed065ba2644b247120dfe1">
+        <source>VK</source>
+        <target state="needs-translation">VK</target>
+      </trans-unit>
+      <trans-unit id="827be0aeb3f8cab0fa7eecd0395e2948">
+        <source>Базовый домен API</source>
+        <target state="needs-translation">Базовый домен API</target>
+      </trans-unit>
+      <trans-unit id="79d99530d60914d6c2280cce682c87af">
+        <source>Домен без схемы, например &lt;code&gt;vk.com&lt;/code&gt; или &lt;code&gt;vk.ru&lt;/code&gt;. Запросы уходят на &lt;code&gt;https://api.{домен}/method&lt;/code&gt;. Смена без обновления аддона при миграции VK com→ru.</source>
+        <target state="needs-translation">Домен без схемы, например &lt;code&gt;vk.com&lt;/code&gt; или &lt;code&gt;vk.ru&lt;/code&gt;. Запросы уходят на &lt;code&gt;https://api.{домен}/method&lt;/code&gt;. Смена без обновления аддона при миграции VK com→ru.</target>
+      </trans-unit>
+      <trans-unit id="4b3924a4ee81c4ec0034cb1c1bc8385a">
+        <source>Не заданы токен бота или chat id</source>
+        <target state="needs-translation">Не заданы токен бота или chat id</target>
+      </trans-unit>
+      <trans-unit id="93543681dd505b4bf72f0b9f88f6271f">
+        <source>Все файлы превышают лимит канала или недоступны</source>
+        <target state="needs-translation">Все файлы превышают лимит канала или недоступны</target>
+      </trans-unit>
+      <trans-unit id="e311793a119da669d33f51110777f768">
+        <source>Ошибка Telegram API</source>
+        <target state="needs-translation">Ошибка Telegram API</target>
+      </trans-unit>
+      <trans-unit id="2375b7a21041a62c2e4a1c9ad2986b3a">
+        <source>Отправлено</source>
+        <target state="needs-translation">Отправлено</target>
+      </trans-unit>
+      <trans-unit id="026e6720e28e182be4137ac8b1410c14">
+        <source>Нет изображения для sendPhoto</source>
+        <target state="needs-translation">Нет изображения для sendPhoto</target>
+      </trans-unit>
+      <trans-unit id="02b222f53917560d3950c241d89b6bc6">
+        <source>Файл изображения недоступен локально</source>
+        <target state="needs-translation">Файл изображения недоступен локально</target>
+      </trans-unit>
+      <trans-unit id="1c82f85764054cf88e433ee918e97ee2">
+        <source>Нет аудио для sendAudio</source>
+        <target state="needs-translation">Нет аудио для sendAudio</target>
+      </trans-unit>
+      <trans-unit id="3b326aa6abb751aeb7de7e89e6b9d240">
+        <source>Аудиофайл недоступен локально</source>
+        <target state="needs-translation">Аудиофайл недоступен локально</target>
+      </trans-unit>
+      <trans-unit id="cc985e368b1621c77eab8ba3e54bc497">
+        <source>Нет видео для sendVideo</source>
+        <target state="needs-translation">Нет видео для sendVideo</target>
+      </trans-unit>
+      <trans-unit id="68e00d0b2cb1eeca2dd1e9c3781781be">
+        <source>Видеофайл недоступен локально</source>
+        <target state="needs-translation">Видеофайл недоступен локально</target>
+      </trans-unit>
+      <trans-unit id="b862fb242aa28da8e00644d03da59720">
+        <source>Нет файла для sendDocument</source>
+        <target state="needs-translation">Нет файла для sendDocument</target>
+      </trans-unit>
+      <trans-unit id="b2ce588b5c2aadb6d4ae4e2a73eb4c23">
+        <source>Документ недоступен локально</source>
+        <target state="needs-translation">Документ недоступен локально</target>
+      </trans-unit>
+      <trans-unit id="f799a0eea5a85e1cf4aee9b96db67ed9">
+        <source>Нет аудио для media_audio</source>
+        <target state="needs-translation">Нет аудио для media_audio</target>
+      </trans-unit>
+      <trans-unit id="ca67a1673c463624a9aca2de5909a5ca">
+        <source>Аудиофайлы недоступны локально</source>
+        <target state="needs-translation">Аудиофайлы недоступны локально</target>
+      </trans-unit>
+      <trans-unit id="909c0f3abe271efef39b5dd5aa5f08ed">
+        <source>Нет файлов для media_document</source>
+        <target state="needs-translation">Нет файлов для media_document</target>
+      </trans-unit>
+      <trans-unit id="c5b22b1628449fcf62eaa2d0fb578166">
+        <source>Файлы недоступны локально</source>
+        <target state="needs-translation">Файлы недоступны локально</target>
+      </trans-unit>
+      <trans-unit id="0019287621e62e17f6e511da62206c14">
+        <source>Кнопка под сообщением (url + подпись)</source>
+        <target state="needs-translation">Кнопка под сообщением (url + подпись)</target>
+      </trans-unit>
+      <trans-unit id="c5d992501c4658dd77957e2b72d55216">
+        <source>Изображение из новости (индекс / лимит)</source>
+        <target state="needs-translation">Изображение из новости (индекс / лимит)</target>
+      </trans-unit>
+      <trans-unit id="9d0a760d030143fe229280bb2c8e43a5">
+        <source>Прямая ссылка или локальный путь на изображение</source>
+        <target state="needs-translation">Прямая ссылка или локальный путь на изображение</target>
+      </trans-unit>
+      <trans-unit id="f99359034bbdf2b07969f789701c8d80">
+        <source>Видео из новости (индекс / лимит)</source>
+        <target state="needs-translation">Видео из новости (индекс / лимит)</target>
+      </trans-unit>
+      <trans-unit id="d392a93e26de9a4f8977c8233f55a03b">
+        <source>Прямая ссылка или путь на видео</source>
+        <target state="needs-translation">Прямая ссылка или путь на видео</target>
+      </trans-unit>
+      <trans-unit id="657bc91aa3d4286073382d77abb4e42d">
+        <source>Аудио из новости (индекс / лимит)</source>
+        <target state="needs-translation">Аудио из новости (индекс / лимит)</target>
+      </trans-unit>
+      <trans-unit id="fd5644ef6ee60e4bed3ca265c20d488a">
+        <source>Прямая ссылка или путь на аудио</source>
+        <target state="needs-translation">Прямая ссылка или путь на аудио</target>
+      </trans-unit>
+      <trans-unit id="8017aed4b4c47aed8f1675be2091fafe">
+        <source>Документ по прямой ссылке / пути</source>
+        <target state="needs-translation">Документ по прямой ссылке / пути</target>
+      </trans-unit>
+      <trans-unit id="3a636490cf29912ad650f9d078cc2b71">
+        <source>Все изображения новости и доп. полей</source>
+        <target state="needs-translation">Все изображения новости и доп. полей</target>
+      </trans-unit>
+      <trans-unit id="5728e6d7df6845c192045b2e6c85d826">
+        <source>Медиа из доп. поля XXX</source>
+        <target state="needs-translation">Медиа из доп. поля XXX</target>
+      </trans-unit>
+      <trans-unit id="d5e3ad9938b10943355042490fba2558">
+        <source>Миниатюра для audio/video</source>
+        <target state="needs-translation">Миниатюра для audio/video</target>
+      </trans-unit>
+      <trans-unit id="c915683f3ec888b8edcc7b06bd1428ec">
+        <source>Telegram</source>
+        <target state="needs-translation">Telegram</target>
+      </trans-unit>
+      <trans-unit id="07167b37dd23130f5aa7eacf3746e052">
+        <source>Токен бота</source>
+        <target state="needs-translation">Токен бота</target>
+      </trans-unit>
+      <trans-unit id="ff6f54b473ae5365079d0090c82dca82">
+        <source>Токен от @BotFather</source>
+        <target state="needs-translation">Токен от @BotFather</target>
+      </trans-unit>
+      <trans-unit id="da430411b87baccac2651bd02d42dc11">
+        <source>Chat / Channel ID</source>
+        <target state="needs-translation">Chat / Channel ID</target>
+      </trans-unit>
+      <trans-unit id="48e5a8c2f08871a587244b73c0ac6c90">
+        <source>@channel или числовой id</source>
+        <target state="needs-translation">@channel или числовой id</target>
+      </trans-unit>
+      <trans-unit id="3dbf2dc0a271a4efaef046f51abc11ee">
+        <source>Тип отправки</source>
+        <target state="needs-translation">Тип отправки</target>
+      </trans-unit>
+      <trans-unit id="8c45d9cf5766a98100df8108d3235247">
+        <source>Текст</source>
+        <target state="needs-translation">Текст</target>
+      </trans-unit>
+      <trans-unit id="ae10737cb835f6f6b6f0cb726a2ae305">
+        <source>Медиа — все</source>
+        <target state="needs-translation">Медиа — все</target>
+      </trans-unit>
+      <trans-unit id="b0f95bd5dd29986945ee5f48ddfdb8b3">
+        <source>Медиа — только видео</source>
+        <target state="needs-translation">Медиа — только видео</target>
+      </trans-unit>
+      <trans-unit id="2401b6467351b20d31abc5070936781a">
+        <source>Медиа — только аудио</source>
+        <target state="needs-translation">Медиа — только аудио</target>
+      </trans-unit>
+      <trans-unit id="9c2745eb537920a3432b3e3a1e16ad77">
+        <source>Медиа — только файлы</source>
+        <target state="needs-translation">Медиа — только файлы</target>
+      </trans-unit>
+      <trans-unit id="5a34e5446905d8389a6dc403bdb76b72">
+        <source>Фото</source>
+        <target state="needs-translation">Фото</target>
+      </trans-unit>
+      <trans-unit id="74e684246d0a96135d4af2a95ca834eb">
+        <source>Аудио</source>
+        <target state="needs-translation">Аудио</target>
+      </trans-unit>
+      <trans-unit id="a0959731ad7bd64d907b100cf28c5775">
+        <source>Видео</source>
+        <target state="needs-translation">Видео</target>
+      </trans-unit>
+      <trans-unit id="38313512f27b6c1081a72e1dd7256fe5">
+        <source>Документ</source>
+        <target state="needs-translation">Документ</target>
+      </trans-unit>
+      <trans-unit id="ea5e8f3aeaeffa79a3f5c44bf5266670">
+        <source>Заголовок новости</source>
+        <target state="needs-translation">Заголовок новости</target>
+      </trans-unit>
+      <trans-unit id="5c4574460bce9fbfb2a1b2e06b5d52d5">
+        <source>Краткая новость</source>
+        <target state="needs-translation">Краткая новость</target>
+      </trans-unit>
+      <trans-unit id="8590d1284469ca243496bfc039047171">
+        <source>Полная новость</source>
+        <target state="needs-translation">Полная новость</target>
+      </trans-unit>
+      <trans-unit id="e9672682651cf4af41aaf11c0330356d">
+        <source>Ссылка на новость</source>
+        <target state="needs-translation">Ссылка на новость</target>
+      </trans-unit>
+      <trans-unit id="c497fd1979913cf9671b3341f64865b7">
+        <source>Дата публикации</source>
+        <target state="needs-translation">Дата публикации</target>
+      </trans-unit>
+      <trans-unit id="71a7cc3806845e3640432b5df73cfc16">
+        <source>Теги как хештеги</source>
+        <target state="needs-translation">Теги как хештеги</target>
+      </trans-unit>
+      <trans-unit id="134ddd799397296011097faa8fccd8a7">
+        <source>Теги без ссылок и без #</source>
+        <target state="needs-translation">Теги без ссылок и без #</target>
+      </trans-unit>
+      <trans-unit id="7dc5f860046af0687711a034e432f3ec">
+        <source>Категории как хештеги</source>
+        <target state="needs-translation">Категории как хештеги</target>
+      </trans-unit>
+      <trans-unit id="90306e1009f283b3e220a92c50ced80b">
+        <source>Список тегов</source>
+        <target state="needs-translation">Список тегов</target>
+      </trans-unit>
+      <trans-unit id="4c6edffec793805e2094aa688281facc">
+        <source>Условный блок по полю новости</source>
+        <target state="needs-translation">Условный блок по полю новости</target>
+      </trans-unit>
+      <trans-unit id="b059f7e15df06e3f864e61040ae3caba">
+        <source>Создать</source>
+        <target state="needs-translation">Создать</target>
+      </trans-unit>
+      <trans-unit id="53b92bd311dd0f3694a4dd74c041732c">
+        <source>Текст публикации, тип события (добавление/редактирование), условия отбора новости, флаги cron/proxy. Каждый шаблон обязан ссылаться на подключение.</source>
+        <target state="needs-translation">Текст публикации, тип события (добавление/редактирование), условия отбора новости, флаги cron/proxy. Каждый шаблон обязан ссылаться на подключение.</target>
+      </trans-unit>
+      <trans-unit id="cd741723fe268940efb241c3b574a616">
+        <source>Нужны активный шаблон и активное подключение; пустые условия = все новости выбранного типа. Для очереди — cron.php?cronmode=repost.</source>
+        <target state="needs-translation">Нужны активный шаблон и активное подключение; пустые условия = все новости выбранного типа. Для очереди — cron.php?cronmode=repost.</target>
+      </trans-unit>
+      <trans-unit id="602680ed8916dcc039882172ef089256">
+        <source>Название</source>
+        <target state="needs-translation">Название</target>
+      </trans-unit>
+      <trans-unit id="ffa9d591c81dc70386b0fe188cdaa835">
+        <source>Подключение</source>
+        <target state="needs-translation">Подключение</target>
+      </trans-unit>
+      <trans-unit id="345805b88b9ca1e189fa11ea817e5666">
+        <source>Тип</source>
+        <target state="needs-translation">Тип</target>
+      </trans-unit>
+      <trans-unit id="87a4286b7b9bf700423b9277ab24c5f1">
+        <source>Активно</source>
+        <target state="needs-translation">Активно</target>
+      </trans-unit>
+      <trans-unit id="e04af96afe53462f72f39331b209a810">
+        <source>Да</source>
+        <target state="needs-translation">Да</target>
+      </trans-unit>
+      <trans-unit id="fb3df31bf52df6c142a279ecdb6dd94c">
+        <source>Действия</source>
+        <target state="needs-translation">Действия</target>
+      </trans-unit>
+      <trans-unit id="1706282c5244c8e988f76c5eb939b754">
+        <source>Редактировать</source>
+        <target state="needs-translation">Редактировать</target>
+      </trans-unit>
+      <trans-unit id="112b141bc7e09133a8b2a57541f90166">
+        <source>Копировать</source>
+        <target state="needs-translation">Копировать</target>
+      </trans-unit>
+      <trans-unit id="b278285aeff5cffad70c9838b3566f5d">
+        <source>Отключить</source>
+        <target state="needs-translation">Отключить</target>
+      </trans-unit>
+      <trans-unit id="ed2bbfbc53d83d3ad81f7fd6485ac6e8">
+        <source>Удалить</source>
+        <target state="needs-translation">Удалить</target>
+      </trans-unit>
+      <trans-unit id="68837fdca505770c86b460e9961d3ebc">
+        <source>Нет шаблонов</source>
+        <target state="needs-translation">Нет шаблонов</target>
+      </trans-unit>
+      <trans-unit id="14bf0635418d51d28e6d10ae1d4458ca">
+        <source>IP / хост</source>
+        <target state="needs-translation">IP / хост</target>
+      </trans-unit>
+      <trans-unit id="8964d94a1bf26979310cee3262f70091">
+        <source>Порт</source>
+        <target state="needs-translation">Порт</target>
+      </trans-unit>
+      <trans-unit id="003f68d33c6e4a0dd021edf10c71fc30">
+        <source>Авторизация</source>
+        <target state="needs-translation">Авторизация</target>
+      </trans-unit>
+      <trans-unit id="5fe5313dd98f8f5c31ab39c22b629759">
+        <source>Логин</source>
+        <target state="needs-translation">Логин</target>
+      </trans-unit>
+      <trans-unit id="5ebe553e01799a927b1d045924bbd4fd">
+        <source>Пароль</source>
+        <target state="needs-translation">Пароль</target>
+      </trans-unit>
+      <trans-unit id="74ea58b6a801f0dce4e5d34dbca034dc">
+        <source>Сохранить</source>
+        <target state="needs-translation">Сохранить</target>
+      </trans-unit>
+      <trans-unit id="2b0b0225a86bb67048840d3da9b899bc">
+        <source>Назад</source>
+        <target state="needs-translation">Назад</target>
+      </trans-unit>
+      <trans-unit id="babacaee1c612f3a01fc2b356cbc71f6">
+        <source>Именованные API-учётные записи провайдера (бот + канал Telegram и т.п.). Несколько подключений — разные каналы или боты.</source>
+        <target state="needs-translation">Именованные API-учётные записи провайдера (бот + канал Telegram и т.п.). Несколько подключений — разные каналы или боты.</target>
+      </trans-unit>
+      <trans-unit id="bf0c366956ea52315d9678244ecbb1d3">
+        <source>Нужно активное подключение с валидным token/chat и хотя бы один активный шаблон, привязанный к нему. Chat id можно получить кнопкой в форме редактирования.</source>
+        <target state="needs-translation">Нужно активное подключение с валидным token/chat и хотя бы один активный шаблон, привязанный к нему. Chat id можно получить кнопкой в форме редактирования.</target>
+      </trans-unit>
+      <trans-unit id="e426ebc40e01cefedc69b16dcb19855e">
+        <source>Провайдер</source>
+        <target state="needs-translation">Провайдер</target>
+      </trans-unit>
+      <trans-unit id="4c773847712b1115db519b2646704d2c">
+        <source>Нет подключений</source>
+        <target state="needs-translation">Нет подключений</target>
+      </trans-unit>
+      <trans-unit id="edab92dd2f04324795f85e3ae18c4c79">
+        <source>— выберите —</source>
+        <target state="needs-translation">— выберите —</target>
+      </trans-unit>
+      <trans-unit id="0d4533dc7fdc23ecdc461437ec7fd616">
+        <source>Тип события</source>
+        <target state="needs-translation">Тип события</target>
+      </trans-unit>
+      <trans-unit id="8ec9ba1533121a8676986cf71cb77f61">
+        <source>При добавлении</source>
+        <target state="needs-translation">При добавлении</target>
+      </trans-unit>
+      <trans-unit id="73c54f5c21a9aa6f7e52fde047f8a36f">
+        <source>При редактировании</source>
+        <target state="needs-translation">При редактировании</target>
+      </trans-unit>
+      <trans-unit id="46d3d56bc428dc7196fe7f91599102ae">
+        <source>Связь условий</source>
+        <target state="needs-translation">Связь условий</target>
+      </trans-unit>
+      <trans-unit id="894b726c413c230f31e19658e70f6caf">
+        <source>И</source>
+        <target state="needs-translation">И</target>
+      </trans-unit>
+      <trans-unit id="df8296f34a270dc5a1bfda89209d066b">
+        <source>ИЛИ</source>
+        <target state="needs-translation">ИЛИ</target>
+      </trans-unit>
+      <trans-unit id="b268fdb95088b858516913a8f51a0131">
+        <source>Текст шаблона</source>
+        <target state="needs-translation">Текст шаблона</target>
+      </trans-unit>
+      <trans-unit id="a6787f565ff19126ecf8e650e8cbdc2a">
+        <source>Нажмите тег — он вставится в шаблон. Кнопки форматирования редактора соответствуют HTML, который принимает канал (для Telegram — жирный, курсив, ссылка и т.п.).</source>
+        <target state="needs-translation">Нажмите тег — он вставится в шаблон. Кнопки форматирования редактора соответствуют HTML, который принимает канал (для Telegram — жирный, курсив, ссылка и т.п.).</target>
+      </trans-unit>
+      <trans-unit id="773bc45287c76747754533c41c399771">
+        <source>Условия</source>
+        <target state="needs-translation">Условия</target>
+      </trans-unit>
+      <trans-unit id="cbbc069e2eb3b6ba3038740d9a8a4f94">
+        <source>Правила отбора новости перед публикацией. Пустой список — все новости выбранного типа. Для категории укажите id (значение обычно 1).</source>
+        <target state="needs-translation">Правила отбора новости перед публикацией. Пустой список — все новости выбранного типа. Для категории укажите id (значение обычно 1).</target>
+      </trans-unit>
+      <trans-unit id="5da90e7ae391fea5c89995a0641a64f3">
+        <source>Добавить условие</source>
+        <target state="needs-translation">Добавить условие</target>
+      </trans-unit>
+      <trans-unit id="c137623936beb95cced11497d20f3530">
+        <source>В очередь cron</source>
+        <target state="needs-translation">В очередь cron</target>
+      </trans-unit>
+      <trans-unit id="4f0daa5f6913820c05454c4bb3492118">
+        <source>Имеет смысл только если в настройках модуля включена очередь. Иначе отправка сразу в провайдер.</source>
+        <target state="needs-translation">Имеет смысл только если в настройках модуля включена очередь. Иначе отправка сразу в провайдер.</target>
+      </trans-unit>
+      <trans-unit id="aa92d71379162c2cc9ce745b39ee3bda">
+        <source>Использовать прокси</source>
+        <target state="needs-translation">Использовать прокси</target>
+      </trans-unit>
+      <trans-unit id="5bb0a8cdfd86cdab4107c53f8b626040">
+        <source>0 / «случайный» = любой активный из пула при включённом «Использовать прокси».</source>
+        <target state="needs-translation">0 / «случайный» = любой активный из пула при включённом «Использовать прокси».</target>
+      </trans-unit>
+      <trans-unit id="783149a57c2d2809656245440b00b619">
+        <source>Пул HTTP/SOCKS-прокси для исходящих запросов к API соцсети.</source>
+        <target state="needs-translation">Пул HTTP/SOCKS-прокси для исходящих запросов к API соцсети.</target>
+      </trans-unit>
+      <trans-unit id="f333d225bb6163deeae66725206b757a">
+        <source>Необязательны: включаются в шаблоне (use_proxy и опционально proxy_id). Без прокси шаблоны ходят напрямую.</source>
+        <target state="needs-translation">Необязательны: включаются в шаблоне (use_proxy и опционально proxy_id). Без прокси шаблоны ходят напрямую.</target>
+      </trans-unit>
+      <trans-unit id="80148fa5ada7bcd36bf3b351ee3ca3b0">
+        <source>Адрес</source>
+        <target state="needs-translation">Адрес</target>
+      </trans-unit>
+      <trans-unit id="52805a676b1f8f5ad1a611c1f813fe03">
+        <source>Нет прокси</source>
+        <target state="needs-translation">Нет прокси</target>
+      </trans-unit>
+      <trans-unit id="99d0587dde66072f2bfeaaf6a169b34a">
+        <source>Получить chat id</source>
+        <target state="needs-translation">Получить chat id</target>
+      </trans-unit>
+      <trans-unit id="16497fa0c8e13ce8fab874d959db91b9">
+        <source>Тест</source>
+        <target state="needs-translation">Тест</target>
+      </trans-unit>
+      <trans-unit id="e1d08dd59f145584d8af5c85aaa69703">
+        <source>Новость</source>
+        <target state="needs-translation">Новость</target>
+      </trans-unit>
+      <trans-unit id="802515cb78a6a13a069f913d2643bd97">
+        <source>Шаблон</source>
+        <target state="needs-translation">Шаблон</target>
+      </trans-unit>
+      <trans-unit id="ee229f3be236514db02cf2f700092c18">
+        <source>План</source>
+        <target state="needs-translation">План</target>
+      </trans-unit>
+      <trans-unit id="80c8855008daeb339fae5c982906084f">
+        <source>Попытки</source>
+        <target state="needs-translation">Попытки</target>
+      </trans-unit>
+      <trans-unit id="7203f7a4ff564cb876e8db54c903dbfc">
+        <source>Статус</source>
+        <target state="needs-translation">Статус</target>
+      </trans-unit>
+      <trans-unit id="c6fd3c6a629b51b28c19e8495994f4ca">
+        <source>Ошибка</source>
+        <target state="needs-translation">Ошибка</target>
+      </trans-unit>
+      <trans-unit id="6da0f0ae044012e784cdb53ab72a16f1">
+        <source>Отправить</source>
+        <target state="needs-translation">Отправить</target>
+      </trans-unit>
+      <trans-unit id="8827a5be1f98d09a7e6d9edac6f03c0c">
+        <source>Очередь пуста</source>
+        <target state="needs-translation">Очередь пуста</target>
+      </trans-unit>
+      <trans-unit id="c3977647619199f2e03464ccc38bad85">
+        <source>Справочник плейсхолдеров шаблона: базовые теги RePost/DLE, полный набор по каждому каналу, HTML-allowlist и допустимые расширения медиа. Клик по коду тега копирует его в буфер.</source>
+        <target state="needs-translation">Справочник плейсхолдеров шаблона: базовые теги RePost/DLE, полный набор по каждому каналу, HTML-allowlist и допустимые расширения медиа. Клик по коду тега копирует его в буфер.</target>
+      </trans-unit>
+      <trans-unit id="fc59c405c109888f8e48f059d7bb3a1a">
+        <source>Документация по тегам</source>
+        <target state="needs-translation">Документация по тегам</target>
+      </trans-unit>
+      <trans-unit id="07387b2260ba66e31a40819c376139b1">
+        <source>Документация модуля</source>
+        <target state="needs-translation">Документация модуля</target>
+      </trans-unit>
+      <trans-unit id="a48bd7569a24541a8c3113943f7d9a70">
+        <source>Базовые</source>
+        <target state="needs-translation">Базовые</target>
+      </trans-unit>
+      <trans-unit id="c4aa5053dcaa0ed0a2160691f7345ec6">
+        <source>Тег</source>
+        <target state="needs-translation">Тег</target>
+      </trans-unit>
+      <trans-unit id="99d9901bdd4656a93ffa5f6c1f50cc00">
+        <source>Группа</source>
+        <target state="needs-translation">Группа</target>
+      </trans-unit>
+      <trans-unit id="dee0da8cc1329586f18b58e19887909a">
+        <source>Скопировать</source>
+        <target state="needs-translation">Скопировать</target>
+      </trans-unit>
+      <trans-unit id="aec1119132fd0d2c3e6f40e9560699c7">
+        <source>HTML канала</source>
+        <target state="needs-translation">HTML канала</target>
+      </trans-unit>
+      <trans-unit id="2c161e5b6c37a598736ffd8be36a184a">
+        <source>Расширения медиа</source>
+        <target state="needs-translation">Расширения медиа</target>
+      </trans-unit>
+      <trans-unit id="c43b47f43a9002c91fc6a63c0f6b18a0">
+        <source>Расширения</source>
+        <target state="needs-translation">Расширения</target>
+      </trans-unit>
+      <trans-unit id="26aeabd0c99c77002e55825fbcd435af">
+        <source>—</source>
+        <target state="needs-translation">—</target>
+      </trans-unit>
+      <trans-unit id="0e9dcf29a3b63f11b1c0f629bb0c71dd">
+        <source>Доп. поля сайта</source>
+        <target state="needs-translation">Доп. поля сайта</target>
+      </trans-unit>
+      <trans-unit id="798028575397f30a0a07d77b2011642d">
+        <source>Как чипы в редакторе шаблона: значение поля, текст без ссылок, хештеги.</source>
+        <target state="needs-translation">Как чипы в редакторе шаблона: значение поля, текст без ссылок, хештеги.</target>
+      </trans-unit>
+      <trans-unit id="790de3a759cd3fcca8fe2cc0585b091e">
+        <source>Схема настроек недоступна</source>
+        <target state="needs-translation">Схема настроек недоступна</target>
+      </trans-unit>
+      <trans-unit id="4617d14c7a1e0968548798378bfb28bc">
+        <source>Файл конфигурации недоступен для записи</source>
+        <target state="needs-translation">Файл конфигурации недоступен для записи</target>
+      </trans-unit>
+      <trans-unit id="4cd337bfca576ea71f9e38554058a5bd">
+        <source>Каталог конфигурации недоступен для записи</source>
+        <target state="needs-translation">Каталог конфигурации недоступен для записи</target>
+      </trans-unit>
+      <trans-unit id="834b5876f89b407a67f0b3ff11e2c9c5">
+        <source>Все поля недействительны</source>
+        <target state="needs-translation">Все поля недействительны</target>
+      </trans-unit>
+      <trans-unit id="8b54b4eeeef985eb232f5f6656eaac5c">
+        <source>Внимание</source>
+        <target state="needs-translation">Внимание</target>
+      </trans-unit>
+      <trans-unit id="f1f7d4ab31a434c2af63f5ed356e0547">
+        <source>Частичное сохранение завершено с ошибками в полях</source>
+        <target state="needs-translation">Частичное сохранение завершено с ошибками в полях</target>
+      </trans-unit>
+      <trans-unit id="54a59b19f9945c7a147b563b0d61c5ad">
+        <source>Сохранено</source>
+        <target state="needs-translation">Сохранено</target>
+      </trans-unit>
+      <trans-unit id="1223dcd0736b6a0a250a5c63b040169e">
+        <source>Запись не найдена</source>
+        <target state="needs-translation">Запись не найдена</target>
+      </trans-unit>
+      <trans-unit id="0c450c40f3e9bca781dd6f676691d793">
+        <source>Удалено</source>
+        <target state="needs-translation">Удалено</target>
+      </trans-unit>
+      <trans-unit id="69137683ddf7841f1c2c8f7eb4696ea4">
+        <source>Укажите токен бота</source>
+        <target state="needs-translation">Укажите токен бота</target>
+      </trans-unit>
+      <trans-unit id="02daf8d42d70d9552195c89e9a16f91f">
+        <source>Обновления получены</source>
+        <target state="needs-translation">Обновления получены</target>
+      </trans-unit>
+      <trans-unit id="39fd1bcbd713df81e8c695296ae60f01">
+        <source>Укажите chat id</source>
+        <target state="needs-translation">Укажите chat id</target>
+      </trans-unit>
+      <trans-unit id="da27ff3b2cf0483768c2702a162e70b5">
+        <source>Тестовое сообщение RePost</source>
+        <target state="needs-translation">Тестовое сообщение RePost</target>
+      </trans-unit>
+      <trans-unit id="5bf06b358c773a00a3219f4506fd3cd1">
+        <source>Тест отправлен</source>
+        <target state="needs-translation">Тест отправлен</target>
+      </trans-unit>
+      <trans-unit id="d2763d90bda49b8ba99abd18936badda">
+        <source>sendMessage не удался</source>
+        <target state="needs-translation">sendMessage не удался</target>
+      </trans-unit>
+      <trans-unit id="6808ac7cce3b0e4bb04807b0f209db45">
+        <source>Подключение не найдено</source>
+        <target state="needs-translation">Подключение не найдено</target>
+      </trans-unit>
+      <trans-unit id="f70b4aef6db4db098688e67ca61c4c3c">
+        <source>Скопировано</source>
+        <target state="needs-translation">Скопировано</target>
+      </trans-unit>
+      <trans-unit id="6b961afd635bed9fc64045bd99367d9d">
+        <source>Включено</source>
+        <target state="needs-translation">Включено</target>
+      </trans-unit>
+      <trans-unit id="b2726fbeeee5e103c6c58ffbbea57f56">
+        <source>Отключено</source>
+        <target state="needs-translation">Отключено</target>
+      </trans-unit>
+      <trans-unit id="4cacc68f9225daa078f4a2307a02a33d">
+        <source>Укажите название</source>
+        <target state="needs-translation">Укажите название</target>
+      </trans-unit>
+      <trans-unit id="7a8bb01baa205aa68d5454e5814f9cb9">
+        <source>Прокси не найден</source>
+        <target state="needs-translation">Прокси не найден</target>
+      </trans-unit>
+      <trans-unit id="e6083fc34b0510930c2344eaed2dc620">
+        <source>Не удалось подобрать свободный порт для копии</source>
+        <target state="needs-translation">Не удалось подобрать свободный порт для копии</target>
+      </trans-unit>
+      <trans-unit id="f0bb659784103f4506c99355a8a48de8">
+        <source>Укажите IP и порт</source>
+        <target state="needs-translation">Укажите IP и порт</target>
+      </trans-unit>
+      <trans-unit id="97adbfbc2e4de9328a4483dc547997a6">
+        <source>Шаблон не найден</source>
+        <target state="needs-translation">Шаблон не найден</target>
+      </trans-unit>
+      <trans-unit id="20298a57725121989b2fce9bde7f1e4d">
+        <source>Укажите название и подключение</source>
+        <target state="needs-translation">Укажите название и подключение</target>
+      </trans-unit>
+      <trans-unit id="a93c9dacf054829ba4532c668b8c68c3">
+        <source>Нет активных шаблонов</source>
+        <target state="needs-translation">Нет активных шаблонов</target>
+      </trans-unit>
+      <trans-unit id="f6690af79341a87bf5cf9e7a962cf4a6">
+        <source>Отложенная отправка</source>
+        <target state="needs-translation">Отложенная отправка</target>
+      </trans-unit>
+      <trans-unit id="81c9dad1020aa04e8074d6695de89f7c">
+        <source>да</source>
+        <target state="needs-translation">да</target>
+      </trans-unit>
+      <trans-unit id="df28b6f9df132e3be4db5b102433d3b1">
+        <source>нет</source>
+        <target state="needs-translation">нет</target>
+      </trans-unit>
+      <trans-unit id="8468bfe62daa3f0b17d4d3ca62ba83d5">
+        <source>настройка шаблона</source>
+        <target state="needs-translation">настройка шаблона</target>
+      </trans-unit>
+      <trans-unit id="f3a5649b68a6903439e9ee4e0cdc332b">
+        <source>Время отправки</source>
+        <target state="needs-translation">Время отправки</target>
+      </trans-unit>
+      <trans-unit id="6aca754a6bfb295451d83ac6da977bec">
+        <source>пусто = сразу в очередь / due</source>
+        <target state="needs-translation">пусто = сразу в очередь / due</target>
+      </trans-unit>
+      <trans-unit id="866f17ceeb31ae4aef4debe2c743557e">
+        <source>Выбор шаблона</source>
+        <target state="needs-translation">Выбор шаблона</target>
+      </trans-unit>
+      <trans-unit id="aa02a979e176d3ac54bd7e342a46c81a">
+        <source>автоматически</source>
+        <target state="needs-translation">автоматически</target>
+      </trans-unit>
+      <trans-unit id="863ce2436d1781dc01488304ba5a51dd">
+        <source>выбор из активных</source>
+        <target state="needs-translation">выбор из активных</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
