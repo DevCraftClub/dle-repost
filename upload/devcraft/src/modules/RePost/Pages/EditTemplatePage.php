@@ -13,6 +13,7 @@ use DevCraft\Modules\RePost\Models\Connection;
 use DevCraft\Modules\RePost\Provider\ProviderRegistry;
 use DevCraft\Modules\RePost\Provider\DefaultTemplateTags;
 use DevCraft\Modules\RePost\Repositories\TemplateRepository;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Создание / редактирование шаблона.
@@ -117,7 +118,7 @@ final class EditTemplatePage extends AbstractPage {
 
 		$hints = $tags->hints();
 
-		foreach(Application::instance()->dleData()->postXfields() as $name => $meta) {
+		foreach(DleDataService::postXfields() as $name => $meta) {
 			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
 
 			if($key === '') {
@@ -158,7 +159,6 @@ final class EditTemplatePage extends AbstractPage {
 	 * @return array{post: array<string, string>, post_extras: array<string, string>, xfields: array<string, string>, category: array<string, string>}
 	 */
 	private function buildConditionFields(): array {
-		$dleData = Application::instance()->dleData();
 
 		$post = [
 			'autor'       => __('Автор'),
@@ -204,7 +204,7 @@ final class EditTemplatePage extends AbstractPage {
 
 		$xfields = [];
 
-		foreach($dleData->postXfields() as $name => $meta) {
+		foreach(DleDataService::postXfields() as $name => $meta) {
 			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
 
 			if($key === '') {
@@ -217,7 +217,7 @@ final class EditTemplatePage extends AbstractPage {
 
 		$category = [];
 
-		foreach($dleData->categories() as $cid => $cname) {
+		foreach(DleDataService::categories() as $cid => $cname) {
 			$category[(string) $cid] = $cname;
 		}
 

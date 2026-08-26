@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace DevCraft\Modules\RePost\Pages;
 
+use DevCraft\Modules\RePost\RePostIdentity;
+
 use DevCraft\Core\Application;
 use DevCraft\Core\Abstracts\AbstractPage;
 use DevCraft\Modules\RePost\Provider\ProviderRegistry;
 use DevCraft\Modules\RePost\Provider\DefaultTemplateTags;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Справочник тегов шаблонов (базовые + по провайдерам + xfields).
@@ -17,7 +20,7 @@ final class TemplateTagsPage extends AbstractPage {
 	public function handle(): array {
 		$this->addBreadcrumb(__('Теги шаблонов'));
 
-		$meta = Application::instance()->registry()->forMod('repost')?->meta() ?? [];
+		$meta = Application::instance()->registry()->forMod(RePostIdentity::mod())?->meta() ?? [];
 		$docs = rtrim((string) ($meta['docsLink'] ?? 'https://readme.devcraft.club/dev/repost/'), '/') . '/';
 
 		$baseTags  = new DefaultTemplateTags();
@@ -81,7 +84,7 @@ final class TemplateTagsPage extends AbstractPage {
 	private function buildXfieldHints(): array {
 		$hints = [];
 
-		foreach(Application::instance()->dleData()->postXfields() as $name => $meta) {
+		foreach(DleDataService::postXfields() as $name => $meta) {
 			$key = is_string($name)? $name : (string) (is_array($meta)? ($meta['name'] ?? '') : '');
 
 			if($key === '') {
