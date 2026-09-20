@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace DevCraft\Modules\RePost\Services;
 
+use DevCraft\Modules\RePost\RePostIdentity;
+
 use DevCraft\Core\Application;
+use DevCraft\Builders\QueryBuilder;
 use DevCraft\Core\Support\DataManager;
 use DevCraft\Core\Logging\LogGenerator;
 use DevCraft\Modules\RePost\Models\Proxy;
@@ -64,7 +67,7 @@ final class DispatchService {
 			],
 		], 'info');
 
-		$config = DataManager::getConfig('repost');
+		$config = DataManager::getConfig(RePostIdentity::code());
 		$row    = $this->loadNews($newsId);
 
 		if($row === NULL) {
@@ -158,7 +161,7 @@ final class DispatchService {
 	 * Отправка одного элемента очереди.
 	 */
 	public function sendCronItem(CronItem $item): SendResult {
-		$config = DataManager::getConfig('repost');
+		$config = DataManager::getConfig(RePostIdentity::code());
 		$db     = Application::instance()->database();
 		/** @var TemplateRepository $tplRepo */
 		$tplRepo = $db->repository(Template::class);
@@ -390,15 +393,16 @@ final class DispatchService {
 	 * @return array<string, mixed>|null
 	 */
 	private function loadNews(int $newsId): ?array {
-		global $db;
-
-		if($newsId <= 0 || !isset($db)) {
+		if($newsId <= 0) {
 			return NULL;
 		}
 
-		$row = $db->super_query('SELECT * FROM ' . PREFIX . "_post WHERE id='{$newsId}' LIMIT 1");
+		$row = QueryBuilder::create('post')
+			->withConditionsItem('id', $newsId)
+			->withLimit(1)
+			->first();
 
-		return is_array($row) && !empty($row['id'])? $row : NULL;
+		return $row !== [] && !empty($row['id']) ? $row : NULL;
 	}
 
 }
