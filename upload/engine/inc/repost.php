@@ -14,4 +14,7 @@ if(!defined('DEVCRAFT_BOOTSTRAPPED')) {
 	return;
 }
 
-DevCraft\Core\Application::instance()->runAdmin(moduleDir: 'RePost');
+DevCraft\Core\Application::instance()->runAdmin(
+	moduleDir: 'RePost',
+	mod: DevCraft\Modules\RePost\RePostIdentity::mod(),
+);

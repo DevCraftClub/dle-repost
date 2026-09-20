@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Версия | **200.1.0** |
-| Совместимость | DevCraft Admin ≥ **200.4.0**, DLE **20.0** |
+| Совместимость | DevCraft Admin ≥ **200.4.1**, DLE **20.0** |
 | Зависимости (composer) | [`luzrain/telegram-bot-api`](https://github.com/luzrain/telegram-bot-api), [`guzzlehttp/guzzle`](https://github.com/guzzle/guzzle) |
 
 ## Возможности
@@ -19,7 +19,7 @@
 
 ## Установка
 
-1. DevCraft Admin ≥ 200.4.0.
+1. DevCraft Admin ≥ 200.4.1.
 2. ZIP через DLE Plugin Manager.
 3. В каталоге `devcraft/`: `composer require luzrain/telegram-bot-api guzzlehttp/guzzle && composer dump-autoload` (если пакетов ещё нет в `composer.json`). Vendor в архив плагина не входит.
 4. Таблицы Cycle ORM создаются по моделям при первом обращении к модулю в админке.

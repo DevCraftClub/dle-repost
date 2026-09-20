@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * Bootstrap + API отправки для хуков / парсеров.
+ * Хуки RePost для патчей DLE и парсеров.
  *
- * include DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost.php');
+ * include DLEPlugins::Check(ROOT_DIR . '/devcraft/src/modules/RePost/Controller/hooks.php');
  * sendRepost($id, 'addnews'|'editnews', $options);
  */
 
@@ -15,21 +15,15 @@ if(!defined('DATALIFEENGINE')) {
 	die('Hacking attempt!');
 }
 
-require_once DLEPlugins::Check(ROOT_DIR . '/devcraft/init.php');
-
-if(!defined('DEVCRAFT_BOOTSTRAPPED')) {
-	return;
-}
-
-require_once DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost_news_form.php');
+require_once DLEPlugins::Check(__DIR__ . '/news_form.php');
 
 if(!function_exists('sendRepost')) {
 	/**
 	 * Публикация новости через RePost.
 	 *
-	 * @param   int                                $id       ID новости
-	 * @param   string                             $type     addnews|editnews
-	 * @param   array<string, mixed>               $options  defer / planned / template_mode / template_ids
+	 * @param   int                   $id       ID новости
+	 * @param   string                $type     addnews|editnews
+	 * @param   array<string, mixed>  $options  defer / planned / template_mode / template_ids
 	 *
 	 * @return list<\DevCraft\Modules\RePost\Services\Dto\SendResult>
 	 */

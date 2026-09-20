@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 /**
  * Блок настроек RePost на форме новости + разбор POST-опций.
+ *
+ * include DLEPlugins::Check(ROOT_DIR . '/devcraft/src/modules/RePost/Controller/news_form.php');
  */
 
 if(!defined('DATALIFEENGINE')) {
@@ -76,10 +78,6 @@ if(!function_exists('repostNewsFormTemplates')) {
 
 		try {
 			if(!defined('DEVCRAFT_BOOTSTRAPPED')) {
-				require_once DLEPlugins::Check(ROOT_DIR . '/devcraft/init.php');
-			}
-
-			if(!defined('DEVCRAFT_BOOTSTRAPPED')) {
 				return [];
 			}
 
@@ -147,7 +145,7 @@ if(!function_exists('repostNewsFormHtmlAdmin')) {
 			$col2 = array_slice($templates, $half);
 		}
 
-		include DLEPlugins::Check(ENGINE_DIR . '/modules/devcraft/repost/admin_form.php');
+		include DLEPlugins::Check(__DIR__ . '/partials/admin_form.php');
 
 		repostNewsFormScript(true);
 	}
